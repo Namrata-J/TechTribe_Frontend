@@ -121,9 +121,9 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
               dark: "#144e83",
             },
             text: {
-              primary: "#171717",
-              secondary: "#4a4a4a",
-              disabled: "#9e9e9e",
+              primary: "#ffffff",
+              secondary: "#ffffff",
+              disabled: "#ffffff",
             },
             accent: {
               main: "#889E73",
