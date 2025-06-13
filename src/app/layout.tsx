@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Montserrat, Poppins } from "next/font/google";
-import { ThemeRegistery } from "@/app/_theme/ThemeRegistery";
+import { CombinedProvider } from "@/providers/CombinedProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -25,9 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
-        <ThemeRegistery>
+        <CombinedProvider>
         {children}
-        </ThemeRegistery>
+        </CombinedProvider>
       </body>
     </html>
   );

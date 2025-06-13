@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   createTheme,
   ThemeProvider,
@@ -12,16 +18,18 @@ import {
 import { orange, red, lightBlue, green } from "@mui/material/colors";
 import { ThemeContextType, ThemeRegisteryProps } from "./themeRegistery.types";
 
-const themeContext = createContext<ThemeContextType>({ toggleTheme: () => {}, mode: null });
+const themeContext = createContext<ThemeContextType>({
+  toggleTheme: () => {},
+  mode: null,
+});
 
 const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
-
   const [mode, setMode] = useState<PaletteMode | null>(null);
 
   useEffect(() => {
-    if(window !== undefined) {
-      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setMode(dark ? 'dark' : 'light');
+    if (window !== undefined) {
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setMode(dark ? "dark" : "light");
     }
   }, []);
 
@@ -73,7 +81,7 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
       700: "#616161",
       800: "#424242",
       900: "#212121",
-    }
+    },
   };
 
   const theme: Theme = createTheme({
@@ -131,7 +139,28 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
             ...sharedPalette,
           }),
     },
-    components: {},
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
+            fontWeight: "500",
+            fontSize: "0.9rem",
+          },
+          containedPrimary: {
+            color: "#ffffff",
+          },
+        },
+        variants: [
+          {
+            props: { variant: "text" },
+            style: {
+              color: mode === "light" ? "secondary" : "#ffffff",
+            },
+          },
+        ],
+      },
+    },
     typography: {
       fontFamily: "var(--font-montserrat)",
       subtitle1: {
@@ -150,7 +179,8 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
               "--mui-paper": theme.palette.background.paper,
             },
             body: {
-              background: "var(--mui-bg)",
+              backgroundColor: "var(--mui-bg)",
+              height: "100vh",
             },
           }}
         />

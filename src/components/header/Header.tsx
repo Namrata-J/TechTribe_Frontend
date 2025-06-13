@@ -1,0 +1,42 @@
+import * as React from "react";
+import Box from "@mui/material/Box";
+import { AuthBtns } from "./AuthBtns";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import { Logo } from "@/components/header/Logo";
+import Typography from "@mui/material/Typography";
+import { ToggleThemeBtn } from "./ToggleThemeBtn";
+import { flexWithCenter, flexWithStart } from '@/utils/styles';
+
+const Header = () => {
+  return (
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: "background.default",
+        backgroundImage: "none",
+        boxShadow: "none"
+      }}
+    >
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            ...flexWithStart,
+            gap: "0.5rem",
+          }}
+        >
+          <Logo />
+          <Typography variant="h6" component="div">
+            TechTribe
+          </Typography>
+        </Box>
+        <Box sx={{ ...flexWithCenter, gap: '1.5rem'}}>
+          <AuthBtns />
+          <ToggleThemeBtn />
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export { Header };
