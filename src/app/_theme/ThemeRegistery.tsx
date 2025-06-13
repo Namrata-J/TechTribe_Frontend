@@ -1,11 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   createTheme,
   ThemeProvider,
   CssBaseline,
-  useMediaQuery,
   GlobalStyles,
   PaletteMode,
   Theme,
@@ -13,12 +12,18 @@ import {
 import { orange, red, lightBlue, green } from "@mui/material/colors";
 import { ThemeContextType, ThemeRegisteryProps } from "./themeRegistery.types";
 
-const themeContext = createContext<ThemeContextType>({ toggleTheme: () => {}, mode: "light" });
+const themeContext = createContext<ThemeContextType>({ toggleTheme: () => {}, mode: null });
 
 const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-  const [mode, setMode] = useState<PaletteMode>(prefersDarkMode ? "dark" : "light");
+  const [mode, setMode] = useState<PaletteMode | null>(null);
+
+  useEffect(() => {
+    if(window !== undefined) {
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setMode(dark ? 'dark' : 'light');
+    }
+  }, []);
 
   const toggleMode = useMemo<ThemeContextType>(
     () => ({
@@ -33,6 +38,8 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
     }),
     [mode]
   );
+
+  if (!mode) return null;
 
   const sharedPalette = {
     error: {
