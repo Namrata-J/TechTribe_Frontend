@@ -23,7 +23,6 @@ const AuthBtns = () => {
         </Button>
       </Link>
       <Link href="/">
-        {" "}
         <Button variant="contained" color="primary" size="small">
           Sign Up
         </Button>

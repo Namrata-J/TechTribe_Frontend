@@ -11,11 +11,12 @@ import { flexWithCenter, flexWithStart } from '@/utils/styles';
 const Header = () => {
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
-        backgroundColor: "background.default",
+        backgroundColor: "transparent",
         backgroundImage: "none",
-        boxShadow: "none"
+        boxShadow: "none",
+        top: 0
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>

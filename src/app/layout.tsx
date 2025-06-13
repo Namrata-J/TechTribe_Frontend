@@ -5,6 +5,7 @@ import { CombinedProvider } from "@/providers/CombinedProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
+  weight: ["700"], 
 });
 
 const poppins = Poppins({
