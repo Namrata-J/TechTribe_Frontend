@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { useTheme } from "@/app/_theme/ThemeRegistery";
-import Link from "next/link";
 
 const AuthBtns = () => {
   const isLogin = false;
@@ -17,7 +16,7 @@ const AuthBtns = () => {
     </Link>
   ) : (
     <Stack direction="row" spacing={2}>
-      <Link href="/">
+      <Link href="/auth/login">
         <Button color="secondary" size="small">
           Login
         </Button>
