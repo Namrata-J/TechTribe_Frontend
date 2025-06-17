@@ -1,0 +1,5 @@
+export const AUTH_FIELDS = {
+    FIRST_NAME: 'FIRST_NAME',
+    EMAIL_ID: 'EMAIL_ID',
+    AUTH_PWD: 'AUTH_PWD'
+}

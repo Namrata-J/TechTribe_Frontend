@@ -5,12 +5,12 @@ import { CombinedProvider } from "@/providers/CombinedProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
-  weight: ["700"], 
+  weight: ["500", "600", "700"], 
 });
 
 const poppins = Poppins({
   variable: "--font-poppins",
-  weight: ["500"],    
+  weight: ["500", "400", "300"],    
 });
 
 export const metadata: Metadata = {

@@ -4,30 +4,35 @@ import React from "react";
 import Link from "next/link";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { usePathname } from "next/navigation";
 
 const AuthBtns = () => {
   const isLogin = false;
+  const pathname = usePathname();
+  const isAuthSegment = pathname.startsWith("/auth");
 
-  return isLogin ? (
-    <Link href="/">
-      <Button variant="outlined" color="secondary" size="small">
-        Go to feed
-      </Button>
-    </Link>
-  ) : (
-    <Stack direction="row" spacing={2}>
-      <Link href="/auth/login">
-        <Button color="secondary" size="small">
-          Login
-        </Button>
-      </Link>
+  return !isAuthSegment ? (
+    isLogin ? (
       <Link href="/">
-        <Button variant="contained" color="primary" size="small">
-          Sign Up
+        <Button variant="outlined" color="secondary" size="small">
+          Go to feed
         </Button>
       </Link>
-    </Stack>
-  );
+    ) : (
+      <Stack direction="row" spacing={2}>
+        <Link href="/auth?type=login">
+          <Button color="secondary" size="small">
+            Login
+          </Button>
+        </Link>
+        <Link href="/auth?type=signup">
+          <Button variant="contained" color="primary" size="small">
+            Sign Up
+          </Button>
+        </Link>
+      </Stack>
+    )
+  ) : null;
 };
 
 export { AuthBtns };

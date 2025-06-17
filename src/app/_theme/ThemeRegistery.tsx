@@ -160,9 +160,45 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
           },
         ],
       },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            width: "100%",
+            "& .MuiInputLabel-root": {
+              fontFamily: "var(--font-poppins)",
+              fontWeight: "300",
+              fontSize: "0.85rem",
+              lineHeight: "0.85rem",
+            },
+            "& .MuiOutlinedInput-root": {
+              fontFamily: "var(--font-poppins)",
+              fontWeight: "300",
+              fontSize: "0.85rem",
+              lineHeight: "0.85rem",
+              borderRadius: "6px",
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderWidth: "1.5px",
+              },
+            },
+            "& .MuiOutlinedInput-input": {
+              height: "0.85rem",
+              padding: "14.5px 14px",
+            },
+            "& .MuiFormHelperText-root": {
+              fontSize: "0.6rem",
+              fontWeight: "300",
+              fontFamily: "var(--font-poppins)",
+              color: sharedPalette.grey[500],
+            },
+          },
+        },
+      },
     },
     typography: {
       fontFamily: "var(--font-montserrat)",
+      h1: {
+        fontWeight: 700,
+      },
       subtitle1: {
         fontFamily: "var(--font-poppins)",
       },
@@ -175,7 +211,7 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
         lg: 1200,
         xl: 1536,
       },
-    },  
+    },
   });
 
   return (

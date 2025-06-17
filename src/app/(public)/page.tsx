@@ -17,7 +17,7 @@ const LandingPage = () => {
     >
       <Box sx={{ width: { xs: "100%", sm: "70%" } }}>
         <Typography
-          variant="h2"
+          variant="h1"
           component="div"
           color="secondary"
           sx={{
