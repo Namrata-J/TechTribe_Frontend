@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BASE_URL } from "@/utils/constants";
-import { getCookie } from "@/utils/authUtils";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { deleteCookie, getCookie } from "@/utils/authUtils";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthInitialState, loginHandlerPayload, signupHandlerPayload } from "./authSlice.types";
 
@@ -96,6 +96,7 @@ const authSlice = createSlice({
       state.userId = null;
       localStorage.removeItem("token");
       localStorage.removeItem("loggedInId");
+      deleteCookie('token');
     },
     setInitialState: (state, action) => {
       state.encodedToken = action.payload.token;

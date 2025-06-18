@@ -5,15 +5,17 @@ import Link from "next/link";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { usePathname } from "next/navigation";
+import { getCookie } from "@/utils/authUtils";
 
 const AuthBtns = () => {
-  const isLogin = false;
+  const token = getCookie("token");
+  const isLogin = token ? true : false;
   const pathname = usePathname();
   const isAuthSegment = pathname.startsWith("/auth");
 
   return !isAuthSegment ? (
     isLogin ? (
-      <Link href="/">
+      <Link href="/feed">
         <Button variant="outlined" color="secondary" size="small">
           Go to feed
         </Button>

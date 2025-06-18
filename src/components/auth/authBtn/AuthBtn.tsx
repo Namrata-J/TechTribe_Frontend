@@ -1,16 +1,18 @@
 import { Button } from "@mui/material";
-import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { getCookie } from "@/utils/authUtils";
 import { AuthBtnProps } from "./authBtn.types";
 import { AUTH_FIELDS } from "@/utils/constants";
 import {
   loginHandler,
   signupHandler,
 } from "@/redux/features/authentication/authSlice";
+import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 
 const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
   const router = useRouter();
+  const token = getCookie("token");
   const dispatch = useAppDispatch();
   const { userId, loading } = useAppSelector((store) => store.auth);
 
@@ -21,18 +23,29 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
             userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
             userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
           })
-        )
+        ).then((res) => {
+          if (res?.payload?._id) {
+            router.replace("/feed");
+          }
+        })
       : dispatch(
           signupHandler({
             firstName: textFieldInfo[AUTH_FIELDS.FIRST_NAME]?.value,
             userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
             userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
           })
-        );
-    if (userId) {
+        ).then((res) => {
+          if (res?.payload?._id) {
+            router.replace("/profile");
+          }
+        });
+  };
+
+  useEffect(() => {
+    if (token) {
       tabValue === "login" ? router.push("/feed") : router.push("/profile");
     }
-  };
+  }, []);
 
   const disableSubmitBtn = useMemo(() => {
     const shouldDisable = Object.keys(AUTH_FIELDS).some((id) => {
