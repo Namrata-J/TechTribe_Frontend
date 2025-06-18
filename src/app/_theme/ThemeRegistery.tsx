@@ -202,6 +202,10 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
       subtitle1: {
         fontFamily: "var(--font-poppins)",
       },
+      subtitle2: {
+        fontFamily: "var(--font-poppins)",
+        fontSize: '0.8rem'
+      },
     },
     breakpoints: {
       values: {

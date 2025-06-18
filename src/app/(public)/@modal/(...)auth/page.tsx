@@ -1,18 +1,23 @@
 "use client";
 
-import { Box, Button, Modal, Tab, TextField } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
+import validator from "validator";
 import styles from "./page.module.css";
-import { flexWithCenter } from "@/utils/styles";
-import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { useMemo, useState } from "react";
-import CancelTwoToneIcon from "@mui/icons-material/CancelTwoTone";
+import TabContext from "@mui/lab/TabContext";
 import { styled } from "@mui/material/styles";
+import { flexWithCenter } from "@/utils/styles";
 import { AUTH_FIELDS } from "@/utils/constants";
-import validator from "validator";
-import axios from 'axios';
+import {
+  loginHandler,
+  signupHandler,
+  stateReset,
+} from "@/redux/features/authentication/authSlice";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
+import CancelTwoToneIcon from "@mui/icons-material/CancelTwoTone";
+import { Box, Button, Modal, Tab, TextField, Typography } from "@mui/material";
 
 const StyledCancelIcon = styled(CancelTwoToneIcon)(({ theme }) => ({
   position: "absolute",
@@ -36,9 +41,12 @@ const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
 
 const AuthModal = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const authType = searchParams.get('type');
-  const [tabValue, setTabValue] = useState(authType === 'login' ? 'login' : 'signup');
+  const authType = searchParams.get("type");
+  const [tabValue, setTabValue] = useState(
+    authType === "login" ? "login" : "signup"
+  );
   const [textFieldInfo, setTextFieldInfo] = useState({
     [AUTH_FIELDS.FIRST_NAME]: {
       value: "",
@@ -56,6 +64,7 @@ const AuthModal = () => {
       error: false,
     },
   });
+  const { error: apiError, loading } = useAppSelector((store) => store.auth);
 
   const handleClose = () => {
     router.back();
@@ -63,23 +72,25 @@ const AuthModal = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
+    dispatch(stateReset());
   };
 
   const handleAuthBtnClick = () => {
-    axios({
-      method: "post",
-      url: "/login",
-      baseURL: "http://localhost:7777",
-      withCredentials: true,
-      timeout: 5000,
-      data: {
-        email: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
-        password: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value
-      }
-    }).then((res) => {
-      console.log(res);
-    });
-  }
+    tabValue === "login"
+      ? dispatch(
+          loginHandler({
+            userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
+            userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
+          })
+        )
+      : dispatch(
+          signupHandler({
+            firstName: textFieldInfo[AUTH_FIELDS.FIRST_NAME]?.value,
+            userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
+            userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
+          })
+        );
+  };
 
   const tabStyle = {
     minHeight: 0,
@@ -164,18 +175,30 @@ const AuthModal = () => {
         error,
       },
     }));
+
+    if (apiError) {
+      dispatch(stateReset());
+    }
   };
 
   const disableSubmitBtn = useMemo(() => {
     const shouldDisable = Object.keys(AUTH_FIELDS).some((id) => {
       const field = textFieldInfo[id];
-      if(tabValue === 'login' && id === AUTH_FIELDS.FIRST_NAME) {
+      if (tabValue === "login" && id === AUTH_FIELDS.FIRST_NAME) {
         return false;
       }
-      return field.value.length === 0 || field.error
+      return field.value.length === 0 || field.error;
     });
     return shouldDisable;
   }, [tabValue, textFieldInfo]);
+
+  useEffect(() => {
+    return () => {
+      if (apiError) {
+        dispatch(stateReset());
+      }
+    };
+  }, []);
 
   return (
     <Modal sx={flexWithCenter} open={true} aria-labelledby="auth">
@@ -220,6 +243,11 @@ const AuthModal = () => {
                   value={textFieldInfo[field?.id]?.value}
                 />
               ))}
+              {apiError && (
+                <Typography variant="subtitle2" component="div" color="error">
+                  {apiError}
+                </Typography>
+              )}
             </Box>
             <Button
               variant="contained"
@@ -227,6 +255,7 @@ const AuthModal = () => {
               size="small"
               disabled={disableSubmitBtn}
               onClick={handleAuthBtnClick}
+              loading={loading}
             >
               {tabValue === "login" ? "Login" : "Sign Up"}
             </Button>

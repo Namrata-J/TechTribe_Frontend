@@ -3,3 +3,5 @@ export const AUTH_FIELDS = {
     EMAIL_ID: 'EMAIL_ID',
     AUTH_PWD: 'AUTH_PWD'
 }
+
+export const BASE_URL = 'http://localhost:7777';

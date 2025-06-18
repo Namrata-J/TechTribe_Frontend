@@ -1,16 +1,17 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Montserrat, Poppins } from "next/font/google";
+import { ReduxHydrator } from "@/components/ReduxHydrator";
 import { CombinedProvider } from "@/providers/CombinedProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
-  weight: ["500", "600", "700"], 
+  weight: ["500", "600", "700"],
 });
 
 const poppins = Poppins({
   variable: "--font-poppins",
-  weight: ["500", "400", "300"],    
+  weight: ["500", "400", "300"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +28,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} ${poppins.variable}`}>
         <CombinedProvider>
-        {children}
+          <ReduxHydrator />
+          {children}
         </CombinedProvider>
       </body>
     </html>
