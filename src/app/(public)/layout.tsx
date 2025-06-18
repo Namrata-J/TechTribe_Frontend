@@ -9,9 +9,10 @@ export default function PublicLayout({
   children: React.ReactNode,
   modal: React.ReactNode;
 }) {
+
   return (
     <Container>
-      <Header />
+      <Header isAppHeader={false} />
       {children}
       {modal}
     </Container>
