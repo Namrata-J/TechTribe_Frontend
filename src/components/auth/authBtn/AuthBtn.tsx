@@ -29,8 +29,8 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
             userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
           })
         );
-    if(userId) {
-      tabValue === "login" ? router.push('/feed') : router.push('/profile/edit')
+    if (userId) {
+      tabValue === "login" ? router.push("/feed") : router.push("/profile");
     }
   };
 
