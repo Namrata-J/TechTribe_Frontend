@@ -36,14 +36,14 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
           })
         ).then((res) => {
           if (res?.payload?._id) {
-            router.replace("/profile");
+            router.replace("/profile?new=true");
           }
         });
   };
 
   useEffect(() => {
     if (token) {
-      tabValue === "login" ? router.push("/feed") : router.push("/profile");
+      router.push("/feed");
     }
   }, []);
 
