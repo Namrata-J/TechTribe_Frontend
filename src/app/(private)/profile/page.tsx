@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { handleAuthenticationFailure } from "@/utils/authUtils";
+import { ProfileDetails } from "@/components/profile/ProfileDetails";
 import { fetchLoggedInUserDetails } from "@/redux/features/user/userSlice";
 
 const ProfilePage = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { error, status } = useAppSelector((store) => store.user);
 
@@ -21,7 +20,7 @@ const ProfilePage = () => {
     }
   }, [error, status]);
 
-  return <></>;
+  return <ProfileDetails />;
 };
 
 export default ProfilePage;

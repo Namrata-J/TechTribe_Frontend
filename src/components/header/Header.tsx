@@ -15,7 +15,7 @@ const Header = ({ isAppHeader }: headerProps) => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: 'background.default',
         backgroundImage: "none",
         boxShadow: "none",
         top: 0,
@@ -33,7 +33,7 @@ const Header = ({ isAppHeader }: headerProps) => {
             TechTribe
           </Typography>
         </Box>
-        <Box sx={{ ...flexWithCenter, gap: "1.5rem" }}>
+        <Box sx={{ ...flexWithCenter, gap: "1rem" }}>
           {!isAppHeader && <AuthBtns />}
           <ToggleThemeBtn />
           {isAppHeader && <ProfileAvatar />}

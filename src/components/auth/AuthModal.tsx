@@ -11,6 +11,7 @@ import { styled } from "@mui/material/styles";
 import { AuthTabs } from "./authTabs/AuthTabs";
 import { flexWithCenter } from "@/utils/styles";
 import { AUTH_FIELDS } from "@/utils/constants";
+import { TextFieldInfoType } from "./authModal.types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { AuthTextFields } from "./authTextFields/AuthTextFields";
@@ -46,7 +47,7 @@ const AuthModalComp = () => {
   const [tabValue, setTabValue] = useState<"login" | "signup">(
     authType === "login" ? "login" : "signup"
   );
-  const [textFieldInfo, setTextFieldInfo] = useState({
+  const [textFieldInfo, setTextFieldInfo] = useState<TextFieldInfoType>({
     [AUTH_FIELDS.FIRST_NAME]: {
       value: "",
       helperText: "Please enter your firstname",

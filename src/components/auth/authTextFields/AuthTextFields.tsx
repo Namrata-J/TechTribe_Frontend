@@ -2,6 +2,7 @@ import validator from "validator";
 import React, { useMemo } from "react";
 import { TextField } from "@mui/material";
 import { AUTH_FIELDS } from "@/utils/constants";
+import { AuthFieldsKey } from "../authModal.types";
 import { AuthTextFieldsProps } from "./authTextFields.types";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { stateReset } from "@/redux/features/authentication/authSlice";
@@ -40,7 +41,7 @@ const AuthTextFields = ({
 
   const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target?.value;
-    const id = e.target?.id;
+    const id = e.target?.id as AuthFieldsKey;
     let helperText = "";
     let error = false;
 

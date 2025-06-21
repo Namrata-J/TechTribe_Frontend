@@ -183,6 +183,13 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
             "& .MuiOutlinedInput-input": {
               height: "0.85rem",
               padding: "14.5px 14px",
+              minHeight: "0.8rem",
+              "&.MuiInputBase-inputMultiline": {
+                padding: 0,
+              },
+              "&.MuiSelect-select": {
+                minHeight: "0.8rem",
+              }
             },
             "& .MuiFormHelperText-root": {
               fontSize: "0.6rem",
@@ -204,7 +211,11 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
       },
       subtitle2: {
         fontFamily: "var(--font-poppins)",
-        fontSize: '0.8rem'
+        fontSize: "0.8rem",
+      },
+      body1: {
+        fontFamily: "var(--font-poppins)",
+        fontSize: "0.7rem",
       },
     },
     breakpoints: {
