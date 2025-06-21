@@ -22,3 +22,7 @@
 .chipsWrapper {
   padding: 1rem 0 0 0;
 }
+.btnWrapper {
+  text-align: right;
+  width: 100%;
+}

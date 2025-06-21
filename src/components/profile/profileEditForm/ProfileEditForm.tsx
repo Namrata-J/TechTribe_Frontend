@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Chip,
   FormControl,
   FormControlLabel,
@@ -22,7 +23,7 @@ import {
 import validator from "validator";
 import { styled } from "@mui/material/styles";
 import { useAppSelector } from "@/utils/hooks";
-import { flexWithCenter } from "@/utils/styles";
+import { flexWithCenter, flexWithStart } from "@/utils/styles";
 import styles from "./profileEditForm.module.css";
 import React, { useEffect, useState } from "react";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
@@ -39,6 +40,8 @@ const ProfileEditForm = () => {
   const [editFormFields, setEditFormFields] = useState<ProfileEditFormType>(
     {} as ProfileEditFormType
   );
+  const [disableSaveBtn, setDisableSaveBtn] = useState(true);
+  const [isChangesMade, setIsChangesMade] = useState(false);
   const {
     skills,
     about,
@@ -152,6 +155,7 @@ const ProfileEditForm = () => {
       };
 
       setEditFormFields(editFormFieldsList);
+      setDisableSaveBtn(true)
     }
   }, [loggedInUser]);
 
@@ -222,6 +226,10 @@ const ProfileEditForm = () => {
           : []),
       },
     }));
+
+    if(!isChangesMade) {
+      setIsChangesMade(true)
+    }
   };
 
   const handleSkillsInputChange = (
@@ -241,6 +249,10 @@ const ProfileEditForm = () => {
         },
       },
     }));
+
+    if(!isChangesMade) {
+      setIsChangesMade(true)
+    }
   };
 
   const handleChipsAction = (
@@ -268,6 +280,7 @@ const ProfileEditForm = () => {
                     ...prevState[section][field]?.value,
                     prevState[section][field]?.input,
                   ],
+              input: "",
             },
           },
         }));
@@ -283,6 +296,7 @@ const ProfileEditForm = () => {
               value: (prevState[section][field]?.value as string[]).filter(
                 (chip) => chip !== chipVal
               ),
+              input: "",
             },
           },
         }));
@@ -291,7 +305,30 @@ const ProfileEditForm = () => {
       default:
         break;
     }
+
+    if(!isChangesMade) {
+      setIsChangesMade(true)
+    }
   };
+
+  const disableBtn = () => {
+    const shouldDisable = (
+      Object.keys(PROFILE_EDIT_FORM_SECTIONS) as ProfileEditFormSection[]
+    ).some((section) => {
+      const fields = editFormFields[section];
+      if (!fields) return false;
+
+      return Object.values(fields).some((fieldConfig) => fieldConfig.error);
+    });
+
+    setDisableSaveBtn(shouldDisable);
+  };
+
+  useEffect(() => {
+    if(isChangesMade) {
+      disableBtn();
+    }
+  }, [editFormFields]);
 
   return (
     <Box className={styles.form} sx={flexWithCenter}>
@@ -427,6 +464,15 @@ const ProfileEditForm = () => {
           )}
         </Box>
       ))}
+      <Box className={styles.btnWrapper} sx={{}}>
+        <Button
+          disabled={disableSaveBtn}
+          variant="contained"
+          onClick={() => console.log(editFormFields)}
+        >
+          Save
+        </Button>
+      </Box>
     </Box>
   );
 };
