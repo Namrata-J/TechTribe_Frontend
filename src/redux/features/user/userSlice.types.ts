@@ -7,8 +7,8 @@ type gender = "male" | "female" | "others";
 export type loggedInUser = {
   firstName: string;
   lastName?: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
   location?: string;
   profession?: string;
   company?: string;

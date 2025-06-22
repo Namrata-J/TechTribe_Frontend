@@ -78,7 +78,7 @@ const signupHandler = createAsyncThunk(
         error: "An unknown error occurred",
       });
     } catch (error: any) {
-      console.log("ERROR OCCURED WHILE LOGIN", error);
+      console.log("ERROR OCCURED WHILE SIGNUP", error);
       return thunkAPI.rejectWithValue({
         error: error?.response?.data?.message || "An unknown error occurred",
       });

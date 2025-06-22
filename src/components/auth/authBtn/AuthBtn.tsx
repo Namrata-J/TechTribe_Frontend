@@ -9,6 +9,7 @@ import {
 } from "@/redux/features/authentication/authSlice";
 import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
+import { AuthFieldsKey } from "../authModal.types";
 
 const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
   const router = useRouter();
@@ -48,7 +49,7 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
   }, []);
 
   const disableSubmitBtn = useMemo(() => {
-    const shouldDisable = Object.keys(AUTH_FIELDS).some((id) => {
+    const shouldDisable = (Object.keys(AUTH_FIELDS) as AuthFieldsKey[]).some((id) => {
       const field = textFieldInfo[id];
       if (tabValue === "login" && id === AUTH_FIELDS.FIRST_NAME) {
         return false;

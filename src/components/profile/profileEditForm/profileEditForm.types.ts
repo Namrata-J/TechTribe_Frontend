@@ -10,7 +10,7 @@ type ProfileEditFormField = {
   input?: string
 };
 
-type ProfileEditFormSectionFields = Record<string, ProfileEditFormField>;
+export type ProfileEditFormSectionFields = Record<string, ProfileEditFormField>;
 
 export type ProfileEditFormSection = keyof typeof PROFILE_EDIT_FORM_SECTIONS;
 

@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  FIELD_TO_USER_KEY_MAP,
   PROFILE_EDIT_FORM_FIELDS,
   PROFILE_EDIT_FORM_SECTIONS,
 } from "@/utils/constants";
@@ -22,11 +23,14 @@ import {
 } from "./profileEditForm.types";
 import validator from "validator";
 import { styled } from "@mui/material/styles";
-import { useAppSelector } from "@/utils/hooks";
-import { flexWithCenter, flexWithStart } from "@/utils/styles";
+import { flexWithCenter } from "@/utils/styles";
 import styles from "./profileEditForm.module.css";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
+import { loggedInUser } from "@/redux/features/user/userSlice.types";
 import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
+import { updateLoggedInUserDetails } from "@/redux/features/user/userSlice";
 
 const StyledAddIcon = styled(AddCircleTwoToneIcon)(({ theme }) => ({
   cursor: "pointer",
@@ -36,6 +40,10 @@ const StyledAddIcon = styled(AddCircleTwoToneIcon)(({ theme }) => ({
 }));
 
 const ProfileEditForm = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const isNewUser = searchParams.get("new") === "true";
   const { loggedInUser } = useAppSelector((store) => store.user);
   const [editFormFields, setEditFormFields] = useState<ProfileEditFormType>(
     {} as ProfileEditFormType
@@ -154,8 +162,9 @@ const ProfileEditForm = () => {
         },
       };
 
+      setIsChangesMade(false);
       setEditFormFields(editFormFieldsList);
-      setDisableSaveBtn(true)
+      setDisableSaveBtn(true);
     }
   }, [loggedInUser]);
 
@@ -227,8 +236,8 @@ const ProfileEditForm = () => {
       },
     }));
 
-    if(!isChangesMade) {
-      setIsChangesMade(true)
+    if (!isChangesMade) {
+      setIsChangesMade(true);
     }
   };
 
@@ -250,8 +259,8 @@ const ProfileEditForm = () => {
       },
     }));
 
-    if(!isChangesMade) {
-      setIsChangesMade(true)
+    if (!isChangesMade) {
+      setIsChangesMade(true);
     }
   };
 
@@ -306,8 +315,8 @@ const ProfileEditForm = () => {
         break;
     }
 
-    if(!isChangesMade) {
-      setIsChangesMade(true)
+    if (!isChangesMade) {
+      setIsChangesMade(true);
     }
   };
 
@@ -324,8 +333,35 @@ const ProfileEditForm = () => {
     setDisableSaveBtn(shouldDisable);
   };
 
+  const handleSaveBtnClick = () => {
+    const data: Record<string, any> = {};
+
+    for (const section in editFormFields) {
+      const sectionFields = editFormFields[section as ProfileEditFormSection];
+      for (const field in sectionFields) {
+        const value = sectionFields[field].value;
+        data[field] = value;
+      }
+    }
+
+    const userData = {} as Partial<loggedInUser>;
+
+    for (const field in FIELD_TO_USER_KEY_MAP) {
+      const key = FIELD_TO_USER_KEY_MAP[field as keyof typeof FIELD_TO_USER_KEY_MAP];
+      if(data[field] && data[field]?.length>0) {
+        userData[key] = data[field];
+      }
+    }
+
+    dispatch(updateLoggedInUserDetails(userData)).then((res) => {
+      if(isNewUser) {
+        router.push("/feed");
+      }
+    })
+  };
+
   useEffect(() => {
-    if(isChangesMade) {
+    if (isChangesMade) {
       disableBtn();
     }
   }, [editFormFields]);
@@ -468,9 +504,9 @@ const ProfileEditForm = () => {
         <Button
           disabled={disableSaveBtn}
           variant="contained"
-          onClick={() => console.log(editFormFields)}
+          onClick={handleSaveBtnClick}
         >
-          Save
+          {isNewUser ? "Next" : "Save"}
         </Button>
       </Box>
     </Box>

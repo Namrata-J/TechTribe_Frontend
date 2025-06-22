@@ -5,6 +5,7 @@
 import React from "react";
 import Container from "@mui/material/Container";
 import { Header } from "@/components/header/Header";
+import { AlertComp } from "@/components/alert/Alert";
 import { PrivateRoutesGuard } from "@/components/PrivateRoutesGuard";
 
 export default function PrivateLayout({
@@ -16,6 +17,7 @@ export default function PrivateLayout({
     <Container>
       <PrivateRoutesGuard />
       <Header isAppHeader={true} />
+      <AlertComp />
       {children}
       {/* add footer for private routes except when profile page has query new = true */}
     </Container>
