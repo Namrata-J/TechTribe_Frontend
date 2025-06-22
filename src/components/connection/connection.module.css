@@ -1,0 +1,17 @@
+.card {
+  width: 30rem;
+  height: auto;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  gap: 1rem;
+}
+.cardsWrapper {
+  width: 90%;
+  padding: 10vh 0 0 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+.cardContent {
+  flex-direction: column;
+  align-items: flex-start !important;
+}

@@ -1,0 +1,44 @@
+.feed {
+  height: 100vh;
+  flex-direction: column;
+  gap: 1rem;
+}
+.card {
+  width: 22rem;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+.basicInformation {
+  gap: 0.3rem;
+  width: 100%;
+}
+.card,
+.cardContent,
+.basicInformation {
+  flex-direction: column;
+}
+.cardContent {
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+.aboutWrapper,
+.skillsWrapper,
+.lookingForWrapper {
+  width: 100%;
+}
+.aboutHeading,
+.skillsHeading {
+  padding-bottom: 0.7rem;
+}
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #efb036;
+}

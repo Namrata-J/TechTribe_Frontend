@@ -5,6 +5,7 @@ type lookingFor = "Project Collaboration" | "Mentorship" | "Networking" | "Job O
 type gender = "male" | "female" | "others";
 
 export type loggedInUser = {
+  _id?: string;
   firstName: string;
   lastName?: string;
   email?: string;
@@ -25,4 +26,12 @@ export type userInitialState = {
   loading: boolean | false;
   error: string;
   status: number;
+  feed: loggedInUser[];
+  feedLoading: boolean | false;
+  feedError: string;
+  feedStatus: number;
+  connections: loggedInUser[],
+  connectionsLoading: boolean | false,
+  connectionsError: string,
+  connectionsStatus: number,
 };

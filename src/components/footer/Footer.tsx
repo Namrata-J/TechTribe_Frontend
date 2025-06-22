@@ -63,6 +63,7 @@ const Footer = () => {
       >
         {navigationList.map((navigation) => (
           <BottomNavigationAction
+            onClick={navigation.onClickHandler}
             key={navigation.value}
             label={navigation.label}
             value={navigation.value}

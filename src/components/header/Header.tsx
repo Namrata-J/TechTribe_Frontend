@@ -1,21 +1,22 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { AuthBtns } from "./AuthBtns";
+import { LogoutBtn } from "./LogoutBtn";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { headerProps } from "./header.types";
 import { Logo } from "@/components/header/Logo";
+import { ProfileAvatar } from "./ProfileAvatar";
 import Typography from "@mui/material/Typography";
 import { ToggleThemeBtn } from "./ToggleThemeBtn";
 import { flexWithCenter, flexWithStart } from "@/utils/styles";
-import { ProfileAvatar } from "./ProfileAvatar";
 
 const Header = ({ isAppHeader }: headerProps) => {
   return (
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: 'background.default',
+        backgroundColor: "background.default",
         backgroundImage: "none",
         boxShadow: "none",
         top: 0,
@@ -37,6 +38,7 @@ const Header = ({ isAppHeader }: headerProps) => {
           {!isAppHeader && <AuthBtns />}
           <ToggleThemeBtn />
           {isAppHeader && <ProfileAvatar />}
+          {isAppHeader && <LogoutBtn />}
         </Box>
       </Toolbar>
     </AppBar>
