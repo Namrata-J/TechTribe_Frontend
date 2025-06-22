@@ -347,17 +347,20 @@ const ProfileEditForm = () => {
     const userData = {} as Partial<loggedInUser>;
 
     for (const field in FIELD_TO_USER_KEY_MAP) {
-      const key = FIELD_TO_USER_KEY_MAP[field as keyof typeof FIELD_TO_USER_KEY_MAP];
-      if(data[field] && data[field]?.length>0) {
+      const key =
+        FIELD_TO_USER_KEY_MAP[field as keyof typeof FIELD_TO_USER_KEY_MAP];
+      if (data[field] && data[field]?.length > 0) {
         userData[key] = data[field];
       }
     }
 
-    dispatch(updateLoggedInUserDetails(userData)).then((res) => {
-      if(isNewUser) {
-        router.push("/feed");
-      }
-    })
+    dispatch(updateLoggedInUserDetails(userData))
+      .unwrap()
+      .then((res) => {
+        if (isNewUser && res?._id) {
+          router.push("/feed");
+        }
+      });
   };
 
   useEffect(() => {
