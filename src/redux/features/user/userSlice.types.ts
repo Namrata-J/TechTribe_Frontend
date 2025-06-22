@@ -21,6 +21,12 @@ export type loggedInUser = {
   gender?: gender;
 };
 
+type request = {
+  _id: string,
+  toUserId: string,
+  fromUserId: loggedInUser
+}
+
 export type userInitialState = {
   loggedInUser: loggedInUser | null;
   loading: boolean | false;
@@ -34,4 +40,8 @@ export type userInitialState = {
   connectionsLoading: boolean | false,
   connectionsError: string,
   connectionsStatus: number,
+  requests: request[],
+  requestsLoading: boolean | false,
+  requestsError: string,
+  requestsStatus: number,
 };

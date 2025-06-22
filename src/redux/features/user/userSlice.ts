@@ -17,6 +17,10 @@ const initialState: userInitialState = {
   connectionsLoading: false,
   connectionsError: "",
   connectionsStatus: 200,
+  requests: [],
+  requestsLoading: false,
+  requestsError: "",
+  requestsStatus: 200,
 };
 
 const fetchLoggedInUserDetails = createAsyncThunk(
@@ -139,6 +143,35 @@ const fetchUserConnections = createAsyncThunk(
   }
 );
 
+const fetchUserReceivedConnectionRequests = createAsyncThunk(
+  "/user/requests/received",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: "/user/requests/received",
+        baseURL: BASE_URL,
+        withCredentials: true,
+        timeout: 5000,
+      });
+
+      if (response?.data?.data) {
+        return response?.data?.data;
+      }
+
+      return thunkAPI.rejectWithValue({
+        error: "An unknown error occurred",
+      });
+    } catch (error: any) {
+      console.log("ERROR OCCURED WHILE FETCHING USER RECEIVED REQUESTS", error);
+      return thunkAPI.rejectWithValue({
+        error: error?.response?.data?.message || "An unknown error occurred",
+        status: error?.response?.status,
+      });
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -213,6 +246,27 @@ const userSlice = createSlice({
           state.connectionsError = action?.payload?.error || "";
           state.connectionsStatus = action?.payload?.status;
         }
+      )
+      .addCase(fetchUserReceivedConnectionRequests.pending, (state) => {
+        state.requestsLoading = true;
+      })
+      .addCase(
+        fetchUserReceivedConnectionRequests.fulfilled,
+        (state, action) => {
+          state.requests = action.payload || [];
+          state.requestsLoading = false;
+          state.requestsError = "";
+          state.requestsStatus = action?.payload?.status;
+        }
+      )
+      .addCase(
+        fetchUserReceivedConnectionRequests.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.requests = [];
+          state.requestsLoading = false;
+          state.requestsError = action?.payload?.error || "";
+          state.requestsStatus = action?.payload?.status;
+        }
       );
   },
 });
@@ -222,6 +276,7 @@ export {
   fetchUserConnections,
   fetchLoggedInUserDetails,
   updateLoggedInUserDetails,
+  fetchUserReceivedConnectionRequests
 };
 const { reducer, actions } = userSlice;
 export { reducer };
