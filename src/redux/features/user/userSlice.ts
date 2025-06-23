@@ -88,31 +88,34 @@ const updateLoggedInUserDetails = createAsyncThunk(
   }
 );
 
-const fetchUserFeed = createAsyncThunk("/user/feed", async (data, thunkAPI) => {
-  try {
-    const response = await axios({
-      method: "get",
-      url: "/user/feed",
-      baseURL: BASE_URL,
-      withCredentials: true,
-      timeout: 5000,
-    });
+const fetchUserFeed = createAsyncThunk(
+  "/user/feed",
+  async ({ page, limit }: { page: number; limit: number }, thunkAPI) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `/user/feed?page=${page}&limit=${limit}`,
+        baseURL: BASE_URL,
+        withCredentials: true,
+        timeout: 5000,
+      });
 
-    if (response?.data?.data) {
-      return response?.data?.data;
+      if (response?.data?.data) {
+        return response?.data?.data;
+      }
+
+      return thunkAPI.rejectWithValue({
+        error: "An unknown error occurred",
+      });
+    } catch (error: any) {
+      console.log("ERROR OCCURED WHILE FETCHING USER FEED", error);
+      return thunkAPI.rejectWithValue({
+        error: error?.response?.data?.message || "An unknown error occurred",
+        status: error?.response?.status,
+      });
     }
-
-    return thunkAPI.rejectWithValue({
-      error: "An unknown error occurred",
-    });
-  } catch (error: any) {
-    console.log("ERROR OCCURED WHILE FETCHING USER FEED", error);
-    return thunkAPI.rejectWithValue({
-      error: error?.response?.data?.message || "An unknown error occurred",
-      status: error?.response?.status,
-    });
   }
-});
+);
 
 const fetchUserConnections = createAsyncThunk(
   "/user/connections",

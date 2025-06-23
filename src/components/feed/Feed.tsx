@@ -12,15 +12,41 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { flexWithCenter, flexWithSpace } from "@/utils/styles";
+import { fetchUserFeed } from "@/redux/features/user/userSlice";
 import { sendConnectionRequest } from "@/redux/features/connectionRequest/connectionRequestSlice";
 
 const Feed = () => {
   const dispatch = useAppDispatch();
   const { feed } = useAppSelector((store) => store.user);
+  const [page, setPage] = useState(1);
+  const [hasMoreUsersLeftInFeed, setHasMoreUsersLeftInFeed] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  const fetchFeed = () => {
+    if (feed?.length <= 1 && hasMoreUsersLeftInFeed) {
+      let limit = 1;
+      dispatch(fetchUserFeed({ page, limit })).then((res) => {
+        if (res.payload && res.payload?.length < limit) {
+          setHasMoreUsersLeftInFeed(false);
+        } else {
+          if(!initialLoad) {
+            setPage((page) => page + 1);
+          }else {
+            setInitialLoad(false)
+          }
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchFeed();
+  }, []);
 
   return feed && feed.length > 0 ? (
     <Box className={styles.feed} sx={flexWithCenter}>
@@ -145,14 +171,18 @@ const Feed = () => {
               color: "error.main",
             },
           }}
-          onClick={() =>
+          onClick={() => {
             dispatch(
               sendConnectionRequest({
                 status: "ignored",
                 userId: feed[0]._id as string,
               })
-            )
-          }
+            ).then((res) => {
+              if (res.payload) {
+                fetchFeed();
+              }
+            });
+          }}
         >
           <CloseIcon />
         </IconButton>
@@ -162,14 +192,18 @@ const Feed = () => {
               color: "primary.main",
             },
           }}
-          onClick={() =>
+          onClick={() => {
             dispatch(
               sendConnectionRequest({
                 status: "interested",
                 userId: feed[0]._id as string,
               })
-            )
-          }
+            ).then((res) => {
+              if (res.payload) {
+                fetchFeed();
+              }
+            });
+          }}
         >
           <DoneIcon />
         </IconButton>
