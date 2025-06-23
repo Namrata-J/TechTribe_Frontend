@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/utils/hooks";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logoutHandler } from "@/redux/features/authentication/authSlice";
+import { clearLoggedInUserDetails } from "@/redux/features/user/userSlice";
 
 const LogoutBtn = () => {
   const router = useRouter();
@@ -13,8 +14,13 @@ const LogoutBtn = () => {
 
   return (
     <IconButton>
-      <LogoutIcon onClick={() => {dispatch(logoutHandler());
-      router.push('/auth?type=login')}} />
+      <LogoutIcon
+        onClick={() => {
+          dispatch(logoutHandler());
+          dispatch(clearLoggedInUserDetails());
+          router.push("/auth?type=login");
+        }}
+      />
     </IconButton>
   );
 };

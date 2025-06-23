@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./connection.module.css";
-import { useAppSelector } from "@/utils/hooks";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { flexWithCenter, flexWithSpace, flexWithStart } from "@/utils/styles";
 import {
   Avatar,
@@ -10,13 +10,20 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
+import { reviewConnectionRequest } from "@/redux/features/connectionRequest/connectionRequestSlice";
 
 const ReceivedRequests = () => {
+  const dispatch = useAppDispatch();
   const { requests } = useAppSelector((store) => store.user);
+
   return requests && requests.length > 0 ? (
     <Box className={styles.cardsWrapper} sx={flexWithCenter}>
       {requests.map((request) => (
-        <Card className={styles.card} sx={flexWithStart}>
+        <Card
+          key={request?.fromUserId?._id}
+          className={styles.card}
+          sx={flexWithStart}
+        >
           <Avatar
             alt={request?.fromUserId?.firstName}
             src={request?.fromUserId?.photoUrl}
@@ -45,14 +52,34 @@ const ReceivedRequests = () => {
             </Typography>
             <Box className={styles.btnWrapper} sx={flexWithSpace}>
               <Button
-                variant="outlined"
+                variant="contained"
                 color="secondary"
                 className={styles.btn}
+                onClick={() =>
+                  dispatch(
+                    reviewConnectionRequest({
+                      status: "rejected",
+                      requestId: request?._id,
+                    })
+                  )
+                }
               >
-                Reject
+                <Typography variant="body1">Reject</Typography>
               </Button>
               <Button variant="contained" className={styles.btn}>
-                Accept
+                <Typography
+                  variant="body1"
+                  onClick={() =>
+                    dispatch(
+                      reviewConnectionRequest({
+                        status: "accepted",
+                        requestId: request?._id,
+                      })
+                    )
+                  }
+                >
+                  Accept
+                </Typography>
               </Button>
             </Box>
           </CardContent>
@@ -61,7 +88,9 @@ const ReceivedRequests = () => {
     </Box>
   ) : (
     <Box sx={{ ...flexWithCenter, height: "100vh" }}>
-      <Typography variant="subtitle1">No connections found</Typography>
+      <Typography variant="subtitle1">
+        No connection requests received
+      </Typography>
     </Box>
   );
 };

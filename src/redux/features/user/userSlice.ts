@@ -175,7 +175,24 @@ const fetchUserReceivedConnectionRequests = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    removeRequestSendToUserIdfromFeed: (state, action) => {
+      state.feed = state.feed.filter(
+        (user) => user?._id !== action.payload?.toUserId
+      );
+    },
+    removeRequestIdFromReceivedRequests: (state, action) => {
+      state.requests = state.requests.filter(
+        (request) => request?._id !== action.payload?.requestId
+      );
+    },
+    clearLoggedInUserDetails: (state) => {
+      state.loggedInUser = null;
+      state.loading = false;
+      state.error = "";
+      state.status = 200;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLoggedInUserDetails.pending, (state) => {
@@ -276,7 +293,12 @@ export {
   fetchUserConnections,
   fetchLoggedInUserDetails,
   updateLoggedInUserDetails,
-  fetchUserReceivedConnectionRequests
+  fetchUserReceivedConnectionRequests,
 };
 const { reducer, actions } = userSlice;
+export const {
+  clearLoggedInUserDetails,
+  removeRequestSendToUserIdfromFeed,
+  removeRequestIdFromReceivedRequests,
+} = actions;
 export { reducer };

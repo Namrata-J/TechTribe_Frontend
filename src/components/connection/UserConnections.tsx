@@ -10,7 +10,7 @@ const UserConnections = () => {
   return connections && connections.length > 0 ? (
     <Box className={styles.cardsWrapper} sx={flexWithCenter}>
       {connections.map((connection) => (
-        <Card className={styles.card} sx={flexWithStart}>
+        <Card key={connection?._id} className={styles.card} sx={flexWithStart}>
           <Avatar
             alt={connection?.firstName}
             src={connection?.photoUrl}

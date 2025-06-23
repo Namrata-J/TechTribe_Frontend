@@ -1,8 +1,6 @@
 "use client";
 
 import styles from "./feed.module.css";
-import { useAppSelector } from "@/utils/hooks";
-import { flexWithCenter, flexWithSpace } from "@/utils/styles";
 import {
   Avatar,
   Box,
@@ -16,11 +14,15 @@ import {
 } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
+import { flexWithCenter, flexWithSpace } from "@/utils/styles";
+import { sendConnectionRequest } from "@/redux/features/connectionRequest/connectionRequestSlice";
 
 const Feed = () => {
+  const dispatch = useAppDispatch();
   const { feed } = useAppSelector((store) => store.user);
 
-  return (
+  return feed && feed.length > 0 ? (
     <Box className={styles.feed} sx={flexWithCenter}>
       {feed.map((user, index) => (
         <Card
@@ -135,6 +137,7 @@ const Feed = () => {
           </CardContent>
         </Card>
       ))}
+
       <CardActions sx={{ ...flexWithSpace, width: "15rem" }}>
         <IconButton
           sx={{
@@ -142,6 +145,14 @@ const Feed = () => {
               color: "error.main",
             },
           }}
+          onClick={() =>
+            dispatch(
+              sendConnectionRequest({
+                status: "ignored",
+                userId: feed[0]._id as string,
+              })
+            )
+          }
         >
           <CloseIcon />
         </IconButton>
@@ -151,10 +162,22 @@ const Feed = () => {
               color: "primary.main",
             },
           }}
+          onClick={() =>
+            dispatch(
+              sendConnectionRequest({
+                status: "interested",
+                userId: feed[0]._id as string,
+              })
+            )
+          }
         >
           <DoneIcon />
         </IconButton>
       </CardActions>
+    </Box>
+  ) : (
+    <Box className={styles.feed} sx={flexWithCenter}>
+      <Typography variant="subtitle1">No users to connect</Typography>
     </Box>
   );
 };
