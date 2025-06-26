@@ -29,7 +29,7 @@ const Feed = () => {
 
   const fetchFeed = () => {
     if (feed?.length <= 1 && hasMoreUsersLeftInFeed) {
-      let limit = 1;
+      let limit = 5;
       dispatch(fetchUserFeed({ page, limit })).then((res) => {
         if (res.payload && res.payload?.length < limit) {
           setHasMoreUsersLeftInFeed(false);
