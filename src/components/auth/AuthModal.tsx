@@ -30,7 +30,7 @@ const StyledCancelIcon = styled(CancelTwoToneIcon)(({ theme }) => ({
   },
 }));
 
-const StyledTabPanel = styled(TabPanel)(({ theme }) => ({
+const StyledTabPanel = styled(TabPanel)(() => ({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -76,7 +76,7 @@ const AuthModalComp = () => {
         dispatch(stateReset());
       }
     };
-  }, []);
+  }, [apiError, dispatch]);
 
   return (
     <Box

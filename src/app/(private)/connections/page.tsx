@@ -14,7 +14,7 @@ const ConnectionsPage = () => {
 
   useEffect(() => {
     dispatch(fetchUserConnections());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (connectionsError && connectionsStatus) {
@@ -24,7 +24,7 @@ const ConnectionsPage = () => {
         dispatch
       );
     }
-  }, [connectionsError, connectionsStatus]);
+  }, [dispatch, connectionsError, connectionsStatus]);
 
   return <UserConnections />;
 };

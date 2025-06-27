@@ -21,7 +21,7 @@ export type loggedInUser = {
   gender?: gender;
 };
 
-type request = {
+export type request = {
   _id: string,
   toUserId: string,
   fromUserId: loggedInUser
@@ -31,17 +31,22 @@ export type userInitialState = {
   loggedInUser: loggedInUser | null;
   loading: boolean | false;
   error: string;
-  status: number;
+  status?: number;
   feed: loggedInUser[];
   feedLoading: boolean | false;
   feedError: string;
-  feedStatus: number;
+  feedStatus?: number;
   connections: loggedInUser[],
   connectionsLoading: boolean | false,
   connectionsError: string,
-  connectionsStatus: number,
+  connectionsStatus?: number,
   requests: request[],
   requestsLoading: boolean | false,
   requestsError: string,
-  requestsStatus: number,
+  requestsStatus?: number,
 };
+
+export type UserErrorPayload = {
+  error?: string,
+  status?: number
+}

@@ -1,8 +1,13 @@
-import axios from "axios";
+import {
+  UserErrorPayload,
+  loggedInUser,
+  request,
+  userInitialState,
+} from "./userSlice.types";
+import axios, { AxiosError } from "axios";
 import { BASE_URL } from "@/utils/constants";
-import { loggedInUser, userInitialState } from "./userSlice.types";
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showAlert } from "../alert/alertSlice";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState: userInitialState = {
   loggedInUser: null,
@@ -23,157 +28,182 @@ const initialState: userInitialState = {
   requestsStatus: 200,
 };
 
-const fetchLoggedInUserDetails = createAsyncThunk(
-  "/user/view",
-  async (data, thunkAPI) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: "/profile/view",
-        baseURL: BASE_URL,
-        withCredentials: true,
-        timeout: 5000,
-      });
-
-      if (response?.data?.data) {
-        return response?.data?.data;
-      }
-
-      return thunkAPI.rejectWithValue({
-        error: "An unknown error occurred",
-      });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE FETCHING USER", error);
-      return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
-      });
-    }
+const fetchLoggedInUserDetails = createAsyncThunk<
+  loggedInUser,
+  void,
+  {
+    rejectValue: UserErrorPayload;
   }
-);
+>("/user/view", async (_, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: "/profile/view",
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+    });
 
-const updateLoggedInUserDetails = createAsyncThunk(
-  "/user/edit",
-  async (data: Partial<loggedInUser>, thunkAPI) => {
-    try {
-      const response = await axios({
-        method: "patch",
-        url: "/profile/edit",
-        baseURL: BASE_URL,
-        withCredentials: true,
-        timeout: 5000,
-        data,
-      });
-
-      if (response?.data?.data) {
-        thunkAPI.dispatch(
-          showAlert({
-            severity: "success",
-            text: "Profile updated successfuly",
-          })
-        );
-        return response?.data?.data;
-      }
-
-      return thunkAPI.rejectWithValue({
-        error: "An unknown error occurred",
-      });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE UPDATING USER", error);
-      return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
-      });
+    if (response?.data?.data) {
+      return response?.data?.data;
     }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string; status?: number }>;
+
+    console.log("ERROR OCCURED WHILE FETCHING USER", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+      status: err?.response?.status,
+    });
   }
-);
+});
 
-const fetchUserFeed = createAsyncThunk(
-  "/user/feed",
-  async ({ page, limit }: { page: number; limit: number }, thunkAPI) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `/user/feed?page=${page}&limit=${limit}`,
-        baseURL: BASE_URL,
-        withCredentials: true,
-        timeout: 5000,
-      });
+const updateLoggedInUserDetails = createAsyncThunk<
+  loggedInUser,
+  Partial<loggedInUser>,
+  {
+    rejectValue: UserErrorPayload;
+  }
+>("/user/edit", async (data, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "patch",
+      url: "/profile/edit",
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+      data,
+    });
 
-      if (response?.data?.data) {
-        return response?.data?.data;
-      }
-
-      return thunkAPI.rejectWithValue({
-        error: "An unknown error occurred",
-      });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE FETCHING USER FEED", error);
-      return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
-      });
+    if (response?.data?.data) {
+      thunkAPI.dispatch(
+        showAlert({
+          severity: "success",
+          text: "Profile updated successfuly",
+        })
+      );
+      return response?.data?.data;
     }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string; status?: number }>;
+
+    console.log("ERROR OCCURED WHILE UPDATING USER", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+      status: err?.response?.status,
+    });
   }
-);
+});
 
-const fetchUserConnections = createAsyncThunk(
-  "/user/connections",
-  async (data, thunkAPI) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: "/user/connections",
-        baseURL: BASE_URL,
-        withCredentials: true,
-        timeout: 5000,
-      });
+const fetchUserFeed = createAsyncThunk<
+  loggedInUser[],
+  { page: number; limit: number },
+  {
+    rejectValue: UserErrorPayload;
+  }
+>("/user/feed", async ({ page, limit }, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: `/user/feed?page=${page}&limit=${limit}`,
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+    });
 
-      if (response?.data?.data) {
-        return response?.data?.data;
-      }
-
-      return thunkAPI.rejectWithValue({
-        error: "An unknown error occurred",
-      });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE FETCHING USER CONNECTIONS", error);
-      return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
-      });
+    if (response?.data?.data) {
+      return response?.data?.data;
     }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string; status?: number }>;
+
+    console.log("ERROR OCCURED WHILE FETCHING USER FEED", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+      status: err?.response?.status,
+    });
   }
-);
+});
 
-const fetchUserReceivedConnectionRequests = createAsyncThunk(
-  "/user/requests/received",
-  async (data, thunkAPI) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: "/user/requests/received",
-        baseURL: BASE_URL,
-        withCredentials: true,
-        timeout: 5000,
-      });
+const fetchUserConnections = createAsyncThunk<
+  loggedInUser[],
+  void,
+  {
+    rejectValue: UserErrorPayload;
+  }
+>("/user/connections", async (_, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: "/user/connections",
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+    });
 
-      if (response?.data?.data) {
-        return response?.data?.data;
-      }
-
-      return thunkAPI.rejectWithValue({
-        error: "An unknown error occurred",
-      });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE FETCHING USER RECEIVED REQUESTS", error);
-      return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
-      });
+    if (response?.data?.data) {
+      return response?.data?.data;
     }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string; status?: number }>;
+
+    console.log("ERROR OCCURED WHILE FETCHING USER CONNECTIONS", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+      status: err?.response?.status,
+    });
   }
-);
+});
+
+const fetchUserReceivedConnectionRequests = createAsyncThunk<
+  request[],
+  void,
+  {
+    rejectValue: UserErrorPayload;
+  }
+>("/user/requests/received", async (_, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: "/user/requests/received",
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+    });
+
+    if (response?.data?.data) {
+      return response?.data?.data;
+    }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string; error?: number }>;
+
+    console.log("ERROR OCCURED WHILE FETCHING USER RECEIVED REQUESTS", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+      status: err?.response?.status,
+    });
+  }
+});
 
 const userSlice = createSlice({
   name: "user",
@@ -205,17 +235,14 @@ const userSlice = createSlice({
         state.loggedInUser = action.payload || null;
         state.loading = false;
         state.error = "";
+        state.status = 200;
+      })
+      .addCase(fetchLoggedInUserDetails.rejected, (state, action) => {
+        state.loggedInUser = null;
+        state.loading = false;
+        state.error = action?.payload?.error || "";
         state.status = action?.payload?.status;
       })
-      .addCase(
-        fetchLoggedInUserDetails.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loggedInUser = null;
-          state.loading = false;
-          state.error = action?.payload?.error || "";
-          state.status = action?.payload?.status;
-        }
-      )
       .addCase(updateLoggedInUserDetails.pending, (state) => {
         state.loading = true;
       })
@@ -223,17 +250,14 @@ const userSlice = createSlice({
         state.loggedInUser = action.payload || null;
         state.loading = false;
         state.error = "";
+        state.status = 200;
+      })
+      .addCase(updateLoggedInUserDetails.rejected, (state, action) => {
+        state.loggedInUser = null;
+        state.loading = false;
+        state.error = action?.payload?.error || "";
         state.status = action?.payload?.status;
       })
-      .addCase(
-        updateLoggedInUserDetails.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loggedInUser = null;
-          state.loading = false;
-          state.error = action?.payload?.error || "";
-          state.status = action?.payload?.status;
-        }
-      )
       .addCase(fetchUserFeed.pending, (state) => {
         state.feedLoading = true;
       })
@@ -241,9 +265,9 @@ const userSlice = createSlice({
         state.feed = action.payload || [];
         state.feedLoading = false;
         state.feedError = "";
-        state.feedStatus = action?.payload?.status;
+        state.feedStatus = 200;
       })
-      .addCase(fetchUserFeed.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(fetchUserFeed.rejected, (state, action) => {
         state.feed = [];
         state.feedLoading = false;
         state.feedError = action?.payload?.error || "";
@@ -256,17 +280,14 @@ const userSlice = createSlice({
         state.connections = action.payload || [];
         state.connectionsLoading = false;
         state.connectionsError = "";
+        state.connectionsStatus = 200;
+      })
+      .addCase(fetchUserConnections.rejected, (state, action) => {
+        state.connections = [];
+        state.connectionsLoading = false;
+        state.connectionsError = action?.payload?.error || "";
         state.connectionsStatus = action?.payload?.status;
       })
-      .addCase(
-        fetchUserConnections.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.connections = [];
-          state.connectionsLoading = false;
-          state.connectionsError = action?.payload?.error || "";
-          state.connectionsStatus = action?.payload?.status;
-        }
-      )
       .addCase(fetchUserReceivedConnectionRequests.pending, (state) => {
         state.requestsLoading = true;
       })
@@ -276,12 +297,12 @@ const userSlice = createSlice({
           state.requests = action.payload || [];
           state.requestsLoading = false;
           state.requestsError = "";
-          state.requestsStatus = action?.payload?.status;
+          state.requestsStatus = 200;
         }
       )
       .addCase(
         fetchUserReceivedConnectionRequests.rejected,
-        (state, action: PayloadAction<any>) => {
+        (state, action) => {
           state.requests = [];
           state.requestsLoading = false;
           state.requestsError = action?.payload?.error || "";

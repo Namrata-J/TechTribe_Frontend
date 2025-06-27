@@ -20,7 +20,7 @@ const AlertComp = () => {
         dispatch(hideAlert());
       }, 3000);
     }
-  }, [isAlertVisible]);
+  }, [dispatch, isAlertVisible]);
 
   return isAlertVisible ? (
     <Box className={styles.alertBox} sx={flexWithCenter}>

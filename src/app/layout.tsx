@@ -7,11 +7,15 @@ import { CombinedProvider } from "@/providers/CombinedProvider";
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   weight: ["500", "600", "700"],
+  preload: true,
+  subsets: ['latin']
 });
 
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["500", "400", "300"],
+  preload: true,
+  subsets: ['latin']
 });
 
 export const metadata: Metadata = {

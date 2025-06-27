@@ -14,25 +14,30 @@ export type ReviewConnectionRequest = {
   requestId: string;
 };
 
-type sendRequest = {
+export type sendRequest = {
   fromUserId: string;
   toUserId: string;
   status: connectionRequestStatusType;
 };
 
-type reviewRequest = {
+export type reviewRequest = {
   fromUserId: string;
   toUserId: string;
   status: connectionRequestStatusType;
 };
 
 export type ConnectionRequestInitialState = {
-  sendRequest: sendRequest | {};
+  sendRequest: sendRequest | null;
   sendRequestLoading: boolean;
   sendRequestError: string;
-  sendRequestStatus: number;
-  reviewRequest: reviewRequest | {};
+  sendRequestStatus: number | undefined;
+  reviewRequest: reviewRequest | null;
   reviewRequestLoading: boolean;
   reviewRequestError: string;
-  reviewRequestStatus: number;
+  reviewRequestStatus: number | undefined;
+};
+
+export type ConnectionRequestErrorPayload = {
+  error?: string;
+  status?: number
 };

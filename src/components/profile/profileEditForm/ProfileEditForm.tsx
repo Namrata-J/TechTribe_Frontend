@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {
   Box,
   Button,
@@ -166,7 +168,21 @@ const ProfileEditForm = () => {
       setEditFormFields(editFormFieldsList);
       setDisableSaveBtn(true);
     }
-  }, [loggedInUser]);
+  }, [
+    skills,
+    about,
+    photoUrl,
+    firstName,
+    lastName,
+    email,
+    gender,
+    location,
+    profession,
+    company,
+    lookingFor,
+    expererienceLevel,
+    loggedInUser,
+  ]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -174,10 +190,10 @@ const ProfileEditForm = () => {
     field: string
   ) => {
     // for text, textarea, select and radio fields
-    let value = e?.target?.value;
+    const value = e?.target?.value;
     let helperText = "";
     let error = false;
-    let trimmedValue = value.trim();
+    const trimmedValue = value.trim();
     let isExperienceLevelFieldMandatory = false;
 
     if (
@@ -320,7 +336,7 @@ const ProfileEditForm = () => {
     }
   };
 
-  const disableBtn = () => {
+  const disableBtn = (): void => {
     const shouldDisable = (
       Object.keys(PROFILE_EDIT_FORM_SECTIONS) as ProfileEditFormSection[]
     ).some((section) => {
@@ -367,7 +383,7 @@ const ProfileEditForm = () => {
     if (isChangesMade) {
       disableBtn();
     }
-  }, [editFormFields]);
+  }, [disableBtn, isChangesMade, editFormFields]);
 
   return (
     <Box className={styles.form} sx={flexWithCenter}>

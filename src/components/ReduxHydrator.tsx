@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setInitialState } from "@/redux/features/authentication/authSlice";
 
@@ -13,7 +13,7 @@ const ReduxHydrator = () => {
     if (token) {
       dispatch(setInitialState({ token, userId }));
     }
-  }, []);
+  }, [dispatch]);
 
   return null;
 };

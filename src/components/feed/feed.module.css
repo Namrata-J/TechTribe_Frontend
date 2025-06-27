@@ -33,12 +33,3 @@
 .skillsHeading {
   padding-bottom: 0.7rem;
 }
-::-webkit-scrollbar {
-  width: 3px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #efb036;
-}

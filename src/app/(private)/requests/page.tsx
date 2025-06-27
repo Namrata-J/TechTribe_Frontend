@@ -14,13 +14,13 @@ const RequestsPage = () => {
 
   useEffect(() => {
     dispatch(fetchUserReceivedConnectionRequests());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (requestsError && requestsStatus) {
       handleAuthenticationFailure(requestsError, requestsStatus, dispatch);
     }
-  }, [requestsError, requestsStatus]);
+  }, [dispatch, requestsError, requestsStatus]);
 
   return <ReceivedRequests />;
 };

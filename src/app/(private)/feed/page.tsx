@@ -13,7 +13,7 @@ const FeedPage = () => {
     if (feedError && feedStatus) {
       handleAuthenticationFailure(feedError, feedStatus, dispatch);
     }
-  }, [feedError, feedStatus]);
+  }, [dispatch, feedError, feedStatus]);
 
   return <Feed />;
 };

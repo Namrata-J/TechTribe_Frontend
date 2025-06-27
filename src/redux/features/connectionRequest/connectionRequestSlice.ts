@@ -1,31 +1,40 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   removeRequestIdFromReceivedRequests,
   removeRequestSendToUserIdfromFeed,
 } from "../user/userSlice";
 import {
+  ConnectionRequestErrorPayload,
   ConnectionRequestInitialState,
   ReviewConnectionRequest,
   SendConnectionRequest,
+  reviewRequest,
+  sendRequest,
 } from "./connectionRequest.types";
 import { BASE_URL } from "@/utils/constants";
 import { showAlert } from "../alert/alertSlice";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState: ConnectionRequestInitialState = {
-  sendRequest: {},
+  sendRequest: null,
   sendRequestLoading: false,
   sendRequestError: "",
   sendRequestStatus: 200,
-  reviewRequest: {},
+  reviewRequest: null,
   reviewRequestLoading: false,
   reviewRequestError: "",
   reviewRequestStatus: 200,
 };
 
-const sendConnectionRequest = createAsyncThunk(
+const sendConnectionRequest = createAsyncThunk<
+sendRequest,
+SendConnectionRequest,
+{
+  rejectValue: ConnectionRequestErrorPayload;
+}
+>(
   "/connectionRequest/send",
-  async ({ status, userId }: SendConnectionRequest, thunkAPI) => {
+  async ({ status, userId }, thunkAPI) => {
     try {
       const response = await axios({
         method: "post",
@@ -61,19 +70,27 @@ const sendConnectionRequest = createAsyncThunk(
       return thunkAPI.rejectWithValue({
         error: "An unknown error occurred",
       });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE SENDING CONNECTION REQUEST", error);
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string, status?: number }>;
+
+      console.log("ERROR OCCURED WHILE SENDING CONNECTION REQUEST", err);
       return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
+        error: err?.response?.data?.message || "An unknown error occurred",
+        status: err?.response?.status,
       });
     }
   }
 );
 
-const reviewConnectionRequest = createAsyncThunk(
+const reviewConnectionRequest = createAsyncThunk<
+reviewRequest,
+ReviewConnectionRequest,
+{
+  rejectValue: ConnectionRequestErrorPayload;
+}
+>(
   "/connectionRequest/review",
-  async ({ status, requestId }: ReviewConnectionRequest, thunkAPI) => {
+  async ({ status, requestId }, thunkAPI) => {
     try {
       const response = await axios({
         method: "patch",
@@ -107,11 +124,13 @@ const reviewConnectionRequest = createAsyncThunk(
       return thunkAPI.rejectWithValue({
         error: "An unknown error occurred",
       });
-    } catch (error: any) {
-      console.log("ERROR OCCURED WHILE SENDING CONNECTION REQUEST", error);
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string, status?: number }>;
+
+      console.log("ERROR OCCURED WHILE SENDING CONNECTION REQUEST", err);
       return thunkAPI.rejectWithValue({
-        error: error?.response?.data?.message || "An unknown error occurred",
-        status: error?.response?.status,
+        error: err?.response?.data?.message || "An unknown error occurred",
+        status: err?.response?.status,
       });
     }
   }
@@ -128,17 +147,17 @@ const connectionRequestSlice = createSlice({
       })
       .addCase(
         sendConnectionRequest.fulfilled,
-        (state, action: PayloadAction<any>) => {
+        (state, action) => {
           state.sendRequest = action.payload || [];
           state.sendRequestLoading = false;
           state.sendRequestError = "";
-          state.sendRequestStatus = action?.payload?.status;
+          state.sendRequestStatus = 200;
         }
       )
       .addCase(
         sendConnectionRequest.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.sendRequest = [];
+        (state, action) => {
+          state.sendRequest = null;
           state.sendRequestLoading = false;
           state.sendRequestError = action?.payload?.error || "";
           state.sendRequestStatus = action?.payload?.status;
@@ -149,17 +168,17 @@ const connectionRequestSlice = createSlice({
       })
       .addCase(
         reviewConnectionRequest.fulfilled,
-        (state, action: PayloadAction<any>) => {
+        (state, action) => {
           state.reviewRequest = action.payload || [];
           state.reviewRequestLoading = false;
           state.reviewRequestError = "";
-          state.reviewRequestStatus = action?.payload?.status;
+          state.reviewRequestStatus = 200;
         }
       )
       .addCase(
         reviewConnectionRequest.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.reviewRequest = [];
+        (state, action) => {
+          state.reviewRequest = null;
           state.reviewRequestLoading = false;
           state.reviewRequestError = action?.payload?.error || "";
           state.reviewRequestStatus = action?.payload?.status;
@@ -169,5 +188,5 @@ const connectionRequestSlice = createSlice({
 });
 
 export { sendConnectionRequest, reviewConnectionRequest };
-const { reducer, actions } = connectionRequestSlice;
+const { reducer } = connectionRequestSlice;
 export { reducer };

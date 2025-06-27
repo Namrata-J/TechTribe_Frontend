@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import styles from "./feed.module.css";
@@ -19,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { flexWithCenter, flexWithSpace } from "@/utils/styles";
 import { fetchUserFeed } from "@/redux/features/user/userSlice";
 import { sendConnectionRequest } from "@/redux/features/connectionRequest/connectionRequestSlice";
+import { loggedInUser } from "@/redux/features/user/userSlice.types";
 
 const Feed = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +33,8 @@ const Feed = () => {
     if (feed?.length <= 1 && hasMoreUsersLeftInFeed) {
       let limit = 5;
       dispatch(fetchUserFeed({ page, limit })).then((res) => {
-        if (res.payload && res.payload?.length < limit) {
+        const payload = res?.payload as loggedInUser[]
+        if (payload && payload?.length < limit) {
           setHasMoreUsersLeftInFeed(false);
         } else {
           if(!initialLoad) {

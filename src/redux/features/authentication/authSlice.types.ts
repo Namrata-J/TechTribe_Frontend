@@ -1,6 +1,5 @@
 export interface AuthInitialState {
   userId: string | null;
-  encodedToken: string | null;
   isUserLoggedIn: boolean | false;
   error: string;
   loading: boolean | false;
@@ -12,7 +11,11 @@ export interface loginHandlerPayload {
 }
 
 export interface signupHandlerPayload {
-    firstName: string;
-    userEmail: string;
-    userPwd: string;
-  }
+  firstName: string;
+  userEmail: string;
+  userPwd: string;
+}
+
+export type AuthErrorPayload = {
+  error?: string;
+};

@@ -12,13 +12,13 @@ const ProfilePage = () => {
 
   useEffect(() => {
     dispatch(fetchLoggedInUserDetails());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (error && status) {
       handleAuthenticationFailure(error, status, dispatch);
     }
-  }, [error, status]);
+  }, [dispatch, error, status]);
 
   return <ProfileDetails />;
 };
