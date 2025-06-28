@@ -41,4 +41,4 @@ export const FIELD_TO_USER_KEY_MAP = {
   [PROFILE_EDIT_FORM_FIELDS.GENDER]: "gender",
 } as const;
 
-export const BASE_URL = "http://localhost:7777";
+export const BASE_URL = "/api";
