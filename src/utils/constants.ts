@@ -41,4 +41,4 @@ export const FIELD_TO_USER_KEY_MAP = {
   [PROFILE_EDIT_FORM_FIELDS.GENDER]: "gender",
 } as const;
 
-export const BASE_URL = "/api";
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
