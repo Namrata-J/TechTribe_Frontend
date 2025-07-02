@@ -95,9 +95,9 @@ const AuthTextFields = ({
   };
 
   const handleChange = (newValue: string) => {
-    let error = false;
-    let helperText = "";
-    let id = AUTH_FIELDS.AUTH_OTP;
+    const error = false;
+    const helperText = "";
+    const id = AUTH_FIELDS.AUTH_OTP;
 
     setOtp(newValue);
 
