@@ -7,6 +7,7 @@ import {
   AuthInitialState,
   loginHandlerPayload,
   signupHandlerPayload,
+  verifyHandlerPayload,
 } from "./authSlice.types";
 import { loggedInUser } from "../user/userSlice.types";
 
@@ -15,6 +16,7 @@ const initialState: AuthInitialState = {
   isUserLoggedIn: false,
   error: "",
   loading: false,
+  userEmail: null,
 };
 
 const loginHandler = createAsyncThunk<
@@ -81,6 +83,44 @@ const signupHandler = createAsyncThunk<
 
     // set token and userid in localstorage
     if (response?.data?.data) {
+      return { ...response?.data?.data };
+    }
+
+    return thunkAPI.rejectWithValue({
+      error: "An unknown error occurred",
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string }>;
+
+    console.log("ERROR OCCURED WHILE SIGNUP", err);
+    return thunkAPI.rejectWithValue({
+      error: err?.response?.data?.message || "An unknown error occurred",
+    });
+  }
+});
+
+const verifyHandler = createAsyncThunk<
+  loggedInUser | undefined,
+  verifyHandlerPayload,
+  {
+    rejectValue: AuthErrorPayload;
+  }
+>("auth/verify", async ({ userEmail, otp }, thunkAPI) => {
+  try {
+    const response = await axios({
+      method: "post",
+      url: "/verify",
+      baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 5000,
+      data: {
+        otp,
+        email: userEmail,
+      },
+    });
+
+    // set token and userid in localstorage
+    if (response?.data?.data) {
       const token = getCookie("token") || "";
       localStorage.setItem("token", token);
       localStorage.setItem("loggedInId", response?.data?.data?._id);
@@ -93,7 +133,7 @@ const signupHandler = createAsyncThunk<
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
 
-    console.log("ERROR OCCURED WHILE SIGNUP", err);
+    console.log("ERROR OCCURED WHILE VERIFY", err);
     return thunkAPI.rejectWithValue({
       error: err?.response?.data?.message || "An unknown error occurred",
     });
@@ -145,10 +185,23 @@ const authSlice = createSlice({
       .addCase(signupHandler.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
+        state.userEmail = action.payload?.email || null;
+      })
+      .addCase(signupHandler.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.error || "";
+        state.userEmail = null;
+      })
+      .addCase(verifyHandler.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyHandler.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
         state.isUserLoggedIn = true;
         state.userId = action.payload?._id || null;
       })
-      .addCase(signupHandler.rejected, (state, action) => {
+      .addCase(verifyHandler.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.error || "";
         state.isUserLoggedIn = false;
@@ -157,7 +210,7 @@ const authSlice = createSlice({
   },
 });
 
-export { loginHandler, signupHandler };
+export { loginHandler, signupHandler, verifyHandler };
 const { reducer, actions } = authSlice;
 export const { stateReset, logoutHandler, setInitialState } = actions;
 export { reducer };

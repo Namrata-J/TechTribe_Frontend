@@ -8,7 +8,7 @@ const PrivateRoutesGuard = () => {
   useEffect(() => {
     const token = getCookie("token") || "";
     if (!token) {
-      location.assign('/auth?type=login');
+      location.assign('/auth?type=login&invalid=true');
     }
   }, []);
 

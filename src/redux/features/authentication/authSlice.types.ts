@@ -3,6 +3,7 @@ export interface AuthInitialState {
   isUserLoggedIn: boolean | false;
   error: string;
   loading: boolean | false;
+  userEmail: string | null
 }
 
 export interface loginHandlerPayload {
@@ -14,6 +15,11 @@ export interface signupHandlerPayload {
   firstName: string;
   userEmail: string;
   userPwd: string;
+}
+
+export interface verifyHandlerPayload {
+  userEmail: string;
+  otp: string;
 }
 
 export type AuthErrorPayload = {

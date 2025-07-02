@@ -1,18 +1,21 @@
 import validator from "validator";
-import React, { useMemo } from "react";
 import { TextField } from "@mui/material";
 import { AUTH_FIELDS } from "@/utils/constants";
+import React, { useMemo, useState } from "react";
 import { AuthFieldsKey } from "../authModal.types";
+import { MuiOtpInput } from "mui-one-time-password-input";
 import { AuthTextFieldsProps } from "./authTextFields.types";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { stateReset } from "@/redux/features/authentication/authSlice";
 
 const AuthTextFields = ({
   tabValue,
+  signupStep,
   textFieldInfo,
   setTextFieldInfo,
 }: AuthTextFieldsProps) => {
   const dispatch = useAppDispatch();
+  const [otp, setOtp] = useState<string>("");
   const { error: apiError } = useAppSelector((store) => store.auth);
 
   const fieldsList = useMemo(() => {
@@ -91,18 +94,63 @@ const AuthTextFields = ({
     }
   };
 
-  return fieldsList.map((field) => (
-    <TextField
-      key={field?.id}
-      label={field?.label}
-      helperText={textFieldInfo[field?.id]?.helperText}
-      id={field?.id}
-      error={textFieldInfo[field?.id]?.error}
-      type={field?.type}
-      onChange={handleTextFieldChange}
-      value={textFieldInfo[field?.id]?.value}
+  const handleChange = (newValue: string) => {
+    let error = false;
+    let helperText = "";
+    let id = AUTH_FIELDS.AUTH_OTP;
+
+    setOtp(newValue);
+
+    if (newValue?.length === 6) {
+      setTextFieldInfo((prevState) => ({
+        ...prevState,
+        [id]: {
+          ...prevState[id],
+          value: newValue,
+          helperText,
+          error,
+        },
+      }));
+    } else {
+      setTextFieldInfo((prevState) => ({
+        ...prevState,
+        [id]: {
+          ...prevState[id],
+          value: newValue,
+          helperText: "",
+          error: true,
+        },
+      }));
+    }
+  };
+
+  return tabValue === "signup" && signupStep == 2 ? (
+    <MuiOtpInput
+      length={6}
+      value={otp}
+      onChange={handleChange}
+      sx={{
+        "& .MuiOutlinedInput-input.MuiOutlinedInput-input": {
+          padding: 0,
+          minHeight: "3rem",
+          height: "3rem",
+        },
+      }}
     />
-  ));
+  ) : (
+    fieldsList.map((field) => (
+      <TextField
+        key={field?.id}
+        label={field?.label}
+        helperText={textFieldInfo[field?.id]?.helperText}
+        id={field?.id}
+        error={textFieldInfo[field?.id]?.error}
+        type={field?.type}
+        onChange={handleTextFieldChange}
+        value={textFieldInfo[field?.id]?.value}
+      />
+    ))
+  );
 };
 
 export { AuthTextFields };

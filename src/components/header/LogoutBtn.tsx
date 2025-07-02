@@ -16,7 +16,7 @@ const LogoutBtn = () => {
         onClick={() => {
           dispatch(logoutHandler());
           dispatch(clearLoggedInUserDetails());
-          location.assign("/auth?type=login");
+          location.assign("/auth?type=login&invalid=true");
         }}
       />
     </IconButton>

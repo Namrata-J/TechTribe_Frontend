@@ -1,5 +1,6 @@
 import { AUTH_FIELDS } from "@/utils/constants";
 import { Dispatch, SetStateAction } from "react";
+import { SignUpStepType } from "../authModal.types";
 
 type AuthFieldKeys = keyof typeof AUTH_FIELDS;
 type AuthFieldsIds = (typeof AUTH_FIELDS)[AuthFieldKeys];
@@ -16,6 +17,7 @@ export type TextFieldInfo = {
 
 export type AuthTextFieldsProps = {
   tabValue: "login" | "signup";
+  signupStep: SignUpStepType;
   textFieldInfo: TextFieldInfo;
   setTextFieldInfo: Dispatch<SetStateAction<TextFieldInfo>>;
 };

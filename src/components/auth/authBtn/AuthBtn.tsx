@@ -7,12 +7,18 @@ import React, { useEffect, useMemo } from "react";
 import {
   loginHandler,
   signupHandler,
+  verifyHandler,
 } from "@/redux/features/authentication/authSlice";
 import { AuthFieldsKey } from "../authModal.types";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { loggedInUser } from "@/redux/features/user/userSlice.types";
 
-const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
+const AuthBtn = ({
+  tabValue,
+  signupStep,
+  textFieldInfo,
+  setSignupStep,
+}: AuthBtnProps) => {
   const router = useRouter();
   const token = getCookie("token");
   const dispatch = useAppDispatch();
@@ -26,24 +32,38 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
           userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
         })
       ).then((res) => {
-        const payload = res?.payload as loggedInUser
+        const payload = res?.payload as loggedInUser;
         if (payload?._id) {
           router.replace("/feed");
         }
       });
     } else {
-      dispatch(
-        signupHandler({
-          firstName: textFieldInfo[AUTH_FIELDS.FIRST_NAME]?.value,
-          userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
-          userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
-        })
-      ).then((res) => {
-        const payload = res?.payload as loggedInUser;
-        if (payload?._id) {
-          router.replace("/profile?new=true");
-        }
-      });
+      if (signupStep == 1) {
+        dispatch(
+          signupHandler({
+            firstName: textFieldInfo[AUTH_FIELDS.FIRST_NAME]?.value,
+            userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
+            userPwd: textFieldInfo[AUTH_FIELDS.AUTH_PWD]?.value,
+          })
+        ).then((res) => {
+          const payload = res?.payload as { email: string };
+          if (payload?.email) {
+            setSignupStep(2);
+          }
+        });
+      } else {
+        dispatch(
+          verifyHandler({
+            userEmail: textFieldInfo[AUTH_FIELDS.EMAIL_ID]?.value,
+            otp: textFieldInfo[AUTH_FIELDS.AUTH_OTP]?.value,
+          })
+        ).then((res) => {
+          const payload = res?.payload as loggedInUser;
+          if (payload?._id) {
+            router.replace("/profile?new=true");
+          }
+        });
+      }
     }
   };
 
@@ -60,11 +80,19 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
         if (tabValue === "login" && id === AUTH_FIELDS.FIRST_NAME) {
           return false;
         }
+        if (
+          tabValue === "signup" &&
+          signupStep == 1 &&
+          id === AUTH_FIELDS.AUTH_OTP
+        ) {
+          return false;
+        }
         return field.value.length === 0 || field.error;
       }
     );
+
     return shouldDisable;
-  }, [tabValue, textFieldInfo]);
+  }, [tabValue, textFieldInfo, signupStep]);
 
   return (
     <Button
@@ -75,7 +103,7 @@ const AuthBtn = ({ tabValue, textFieldInfo }: AuthBtnProps) => {
       onClick={handleAuthBtnClick}
       loading={loading}
     >
-      {tabValue === "login" ? "Login" : "Sign Up"}
+      {tabValue === "login" ? "Login" : signupStep == 1 ? "Submit" : "Verify"}
     </Button>
   );
 };

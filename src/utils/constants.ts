@@ -2,6 +2,7 @@ export const AUTH_FIELDS = {
   FIRST_NAME: "FIRST_NAME",
   EMAIL_ID: "EMAIL_ID",
   AUTH_PWD: "AUTH_PWD",
+  AUTH_OTP: "AUTH_OTP"
 } as const;
 
 export const PROFILE_EDIT_FORM_SECTIONS = {

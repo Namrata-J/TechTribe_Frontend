@@ -11,3 +11,5 @@ type AuthField = {
 export type TextFieldInfoType = {
   [key in AuthFieldsKey]: AuthField;
 };
+
+export type SignUpStepType = 1 | 2;

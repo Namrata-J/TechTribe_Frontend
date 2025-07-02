@@ -5,7 +5,7 @@ import { useAppDispatch } from "@/utils/hooks";
 import { AuthTabProps } from "./authTabs.types";
 import { stateReset } from "@/redux/features/authentication/authSlice";
 
-const AuthTabs = ({ setTabValue }: AuthTabProps) => {
+const AuthTabs = ({ setTabValue, setSignupStep }: AuthTabProps) => {
   const dispatch = useAppDispatch();
 
   const tabStyle = {
@@ -17,6 +17,7 @@ const AuthTabs = ({ setTabValue }: AuthTabProps) => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: 'login' | 'signup') => {
     setTabValue(newValue);
+    setSignupStep(1);
     dispatch(stateReset());
   };
 

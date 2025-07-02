@@ -28,6 +28,6 @@ export const handleAuthenticationFailure = (
 ) => {
   if (error && [401, 404].includes(status)) {
     dispatch(logoutHandler());
-    location.assign(`/auth?type=${status == 401 ? "login" : "signup"}`);
+    location.assign(`/auth?type=${status == 401 ? "login" : "signup"}&invalid=true`);
   }
 };
