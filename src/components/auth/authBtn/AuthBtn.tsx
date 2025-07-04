@@ -77,7 +77,7 @@ const AuthBtn = ({
     const shouldDisable = (Object.keys(AUTH_FIELDS) as AuthFieldsKey[]).some(
       (id) => {
         const field = textFieldInfo[id];
-        if (tabValue === "login" && id === AUTH_FIELDS.FIRST_NAME) {
+        if (tabValue === "login" && (id === AUTH_FIELDS.FIRST_NAME || id === AUTH_FIELDS.AUTH_OTP)) {
           return false;
         }
         if (

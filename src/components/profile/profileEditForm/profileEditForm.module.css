@@ -21,6 +21,8 @@
 }
 .chipsWrapper {
   padding: 1rem 0 0 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .btnWrapper {
   text-align: right;

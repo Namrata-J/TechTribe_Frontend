@@ -25,7 +25,7 @@ import {
 } from "./profileEditForm.types";
 import validator from "validator";
 import { styled } from "@mui/material/styles";
-import { flexWithCenter } from "@/utils/styles";
+import { flexWithCenter, flexWithStart } from "@/utils/styles";
 import styles from "./profileEditForm.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -448,7 +448,7 @@ const ProfileEditForm = () => {
                       helperText={editFormField?.helperText}
                     />
                     {editFormField?.value?.length > 0 && (
-                      <Box className={styles.chipsWrapper}>
+                      <Box className={styles.chipsWrapper} sx={flexWithStart}>
                         {(editFormField?.value as string[]).map((chip) => (
                           <Chip
                             key={chip}
