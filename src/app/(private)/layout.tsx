@@ -11,8 +11,10 @@ import { PrivateRoutesGuard } from "@/components/PrivateRoutesGuard";
 
 export default function PrivateLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <Container>
@@ -20,6 +22,7 @@ export default function PrivateLayout({
       <Header isAppHeader={true} />
       <AlertComp />
       {children}
+      {modal}
       <Footer />
     </Container>
   );

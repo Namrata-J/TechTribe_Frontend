@@ -1,0 +1,44 @@
+.modal {
+  height: 90vh;
+  width: 75vh;
+  border-radius: 5rem;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal > * {
+  width: 100%;
+}
+.header {
+  height: 8vh;
+  padding: 0 1rem;
+  gap: 0.7rem;
+}
+.chatArea {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: scroll;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.message {
+  gap: 0.5rem;
+  width: 100%;
+}
+.messageText {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--color-text);
+}
+.leftMsg {
+  border-radius: 0.5rem 0.5rem 0.5rem 0rem;
+}
+.rightMsg {
+  border-radius: 0.5rem 0.5rem 0rem 0.5rem;
+}
+.footer {
+  height: 10vh;
+  padding: 1rem;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+}

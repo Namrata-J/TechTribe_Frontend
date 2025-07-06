@@ -1,40 +1,69 @@
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+} from "@mui/material";
 import React from "react";
+import { useRouter } from "next/navigation";
 import styles from "./connection.module.css";
 import { useAppSelector } from "@/utils/hooks";
-import { flexWithCenter, flexWithStart } from "@/utils/styles";
-import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
+import { flexWithCenter, flexWithStart, flexWithSpace } from "@/utils/styles";
 
 const UserConnections = () => {
+  const router = useRouter();
   const { connections } = useAppSelector((store) => store.user);
 
   return connections && connections.length > 0 ? (
     <Box className={styles.cardsWrapper} sx={flexWithCenter}>
       {connections.map((connection) => (
-        <Card key={connection?._id} className={styles.card} sx={flexWithStart}>
+        <Card
+          key={connection?._id}
+          className={styles.card}
+          sx={{
+            ...flexWithStart,
+            boxShadow:
+              "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px",
+          }}
+        >
           <Avatar
             alt={connection?.firstName}
             src={connection?.photoUrl}
             sx={{
-              width: 24,
-              height: 24,
+              width: 40,
+              height: 40,
             }}
           />
           <CardContent
-            className={styles.cardContent}
-            sx={{ ...flexWithStart, padding: "0 !important" }}
+            sx={{ ...flexWithSpace, padding: "0 !important", width: "100%" }}
           >
-            <Typography
-              color="secondary"
-              variant="subtitle2"
-              component="h6"
-              sx={{ fontWeight: 600, lineHeight: "1.1rem" }}
+            <Box className={styles.cardContentTypography} sx={flexWithStart}>
+              <Typography
+                color="secondary"
+                variant="subtitle2"
+                component="h6"
+                sx={{ fontWeight: 600, lineHeight: "1.1rem" }}
+              >
+                {connection?.firstName} {connection?.lastName}
+              </Typography>
+              <Typography color="grey.600" variant="body1" component="div">
+                {connection?.profession}{" "}
+                {connection?.company ? `, ${connection.company}` : ""}
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              sx={{
+                padding: "0.2rem 0.8rem",
+                minWidth: "auto",
+                boxShadow: "none",
+              }}
+              onClick={() => router.push(`/chat/${connection?._id}`)}
             >
-              {connection?.firstName} {connection?.lastName}
-            </Typography>
-            <Typography color="grey.600" variant="body1" component="div">
-              {connection?.profession}{" "}
-              {connection?.company ? `, ${connection.company}` : ""}
-            </Typography>
+              Chat
+            </Button>
           </CardContent>
         </Card>
       ))}

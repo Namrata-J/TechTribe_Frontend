@@ -79,8 +79,8 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
       500: "#9e9e9e",
       600: "#757575",
       700: "#616161",
-      800: "#424242",
-      900: "#212121",
+      800: "#292929",
+      900: "#111111",
     },
   };
 
@@ -189,7 +189,7 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
               },
               "&.MuiSelect-select": {
                 minHeight: "0.8rem",
-              }
+              },
             },
             "& .MuiFormHelperText-root": {
               fontSize: "0.6rem",
@@ -237,6 +237,16 @@ const ThemeRegistery = ({ children }: ThemeRegisteryProps) => {
             ":root": {
               "--mui-bg": theme.palette.background.default,
               "--mui-paper": theme.palette.background.paper,
+              "--mui-greyShade0": theme.palette.grey[50],
+              "--mui-greyShade1": theme.palette.grey[100],
+              "--mui-greyShade2": theme.palette.grey[200],
+              "--mui-greyShade3": theme.palette.grey[300],
+              "--mui-greyShade4": theme.palette.grey[400],
+              "--mui-greyShade5": theme.palette.grey[500],
+              "--mui-greyShade6": theme.palette.grey[600],
+              "--mui-greyShade7": theme.palette.grey[700],
+              "--mui-greyShade8": theme.palette.grey[800],
+              "--mui-greyShade9": theme.palette.grey[900],
             },
             body: {
               backgroundColor: "var(--mui-bg)",
