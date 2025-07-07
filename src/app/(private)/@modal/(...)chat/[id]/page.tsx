@@ -73,8 +73,13 @@ const ChatModal = () => {
       }
     );
 
-    socket.on("unauthorized", () => {
-      location.assign("/auth?type=login&invalid=true");
+    socket.on("connect_error", (err) => {
+      if (
+        err?.message === "Authentication error" ||
+        err?.message === "User not found"
+      ) {
+        location.assign("/auth?type=login&invalid=true");
+      }
       socket.disconnect();
     });
 
