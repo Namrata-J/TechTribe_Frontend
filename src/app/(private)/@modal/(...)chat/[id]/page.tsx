@@ -11,24 +11,27 @@ import {
 } from "@mui/material";
 import io from "socket.io-client";
 import styles from "./page.module.css";
+import { Message } from "./page.types";
 import { useParams } from "next/navigation";
 import { BASE_URL } from "@/utils/constants";
 import { getCookie } from "@/utils/authUtils";
-import { useAppSelector } from "@/utils/hooks";
 import SendIcon from "@mui/icons-material/Send";
-import React, { useEffect, useRef, useState } from "react";
-import { Message, MessagesList } from "./page.types";
 import { useTheme } from "@/app/_theme/ThemeRegistery";
+import React, { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { loggedInUser } from "@/redux/features/user/userSlice.types";
 import { flexWithCenter, flexWithSpace, flexWithStart } from "@/utils/styles";
 import PrivateConnectivityRoundedIcon from "@mui/icons-material/PrivateConnectivityRounded";
+import { addMessage, clearMessages, fetchMessages } from "@/redux/features/chat/chatSlice";
 
 const ChatModal = () => {
+  let { id } = useParams();
   const { mode } = useTheme();
-  const { id: connectionId } = useParams();
+  const dispatch = useAppDispatch();
   const chatAreaRef = useRef<HTMLDivElement>(null);
   const [textInput, setTextInput] = useState<string>("");
-  const [messagesList, setMessagesList] = useState<MessagesList>([]);
+  const connectionId = typeof id === "string" ? id : id?.[0];
+  const { messagesList } = useAppSelector((store) => store.chat);
   const [connection, setConnection] = useState<loggedInUser | undefined>();
   const { loggedInUser, connections } = useAppSelector((store) => store.user);
 
@@ -60,16 +63,15 @@ const ChatModal = () => {
     socket.on(
       "receiveMessage",
       ({ messageId, message, senderId, date, time }: Message) => {
-        setMessagesList((prevMessages) => [
-          ...prevMessages,
-          {
+        dispatch(
+          addMessage({
             messageId,
             message,
             senderId,
             date,
             time,
-          },
-        ]);
+          })
+        );
       }
     );
 
@@ -85,6 +87,7 @@ const ChatModal = () => {
 
     return () => {
       socket.disconnect();
+      dispatch(clearMessages())
     };
   }, [loggedInUser, connection]);
 
@@ -102,11 +105,17 @@ const ChatModal = () => {
     setConnection(receiver);
   }, []);
 
+  useEffect(() => {
+    if (connectionId) {
+      dispatch(fetchMessages({ receiverId: connectionId }));
+    }
+  }, [connectionId, dispatch]);
+
   return (
     <Modal
       open={true}
       sx={flexWithCenter}
-      // onClose={() => {}}
+    // onClose={() => {}}
     >
       <Paper
         className={styles.modal}
@@ -136,77 +145,103 @@ const ChatModal = () => {
           {messagesList &&
             messagesList?.length > 0 &&
             messagesList.map((message, _i) => {
-              const isSenderMe = message?.senderId === loggedInUser?._id;
+              const isSenderloggedInUser =
+                message?.senderId === loggedInUser?._id;
               const isNextMsgSenderSameAsPrevOne =
                 messagesList[_i + 1] &&
                 messagesList[_i + 1]?.senderId === message?.senderId;
               const isNextSameSenderHasSameTime =
                 isNextMsgSenderSameAsPrevOne &&
                 messagesList[_i + 1]?.time === message?.time;
+              const shouldShowDate =
+                !messagesList[_i - 1] ||
+                (messagesList[_i - 1] &&
+                  messagesList[_i - 1]?.date !== message?.date);
 
               return (
                 <Box
+                  className={styles?.messageWrapper}
                   key={message?.messageId}
-                  className={styles.message}
-                  sx={{
-                    ...flexWithStart,
-                    alignItems: "flex-end",
-                    flexDirection: isSenderMe ? "row-reverse" : "row",
-                    width: "100%",
-                    marginBottom:
-                      isNextMsgSenderSameAsPrevOne || !messagesList[_i + 1]
-                        ? "0"
-                        : "1.5rem",
-                  }}
                 >
-                  <Avatar
-                    src={isSenderMe ? photoUrl : connection?.photoUrl}
-                    sx={{
-                      width: 18,
-                      height: 18,
-                      visibility: isNextMsgSenderSameAsPrevOne
-                        ? "hidden"
-                        : "visible",
-                      marginBottom: "0.9rem",
-                    }}
-                  />
-                  <Box ref={chatAreaRef}>
-                    <Typography
-                      variant="body2"
-                      className={`${styles.messageText} ${
-                        isNextMsgSenderSameAsPrevOne
-                          ? ""
-                          : isSenderMe
-                          ? styles.rightMsg
-                          : styles.leftMsg
-                      }`}
-                      sx={{
-                        color:
-                          mode === "light" && isSenderMe
-                            ? "background.paper"
-                            : "",
-                        backgroundColor: isSenderMe
-                          ? "accent.main"
-                          : mode === "light"
-                          ? "grey.300"
-                          : "grey.700",
-                      }}
-                    >
-                      {message?.message}
-                    </Typography>
-                    {!isNextSameSenderHasSameTime && (
+                  {shouldShowDate && (
+                    <Box className={styles.dateWrapper} sx={flexWithCenter}>
                       <Typography
                         variant="body1"
-                        component="div"
+                        className={styles.date}
                         sx={{
-                          fontSize: "0.55rem",
-                          paddingTop: "0.1rem",
-                          textAlign: isSenderMe ? "right" : "left",
+                          color: mode === "light" ? "grey.50" : "grey.300",
+                          backgroundColor: "secondary.main",
                         }}
                       >
-                        {message?.time}
+                        {message?.date}
                       </Typography>
-                    )}
+                    </Box>
+                  )}
+                  <Box
+                    className={styles.message}
+                    sx={{
+                      ...flexWithStart,
+                      alignItems: "flex-end",
+                      flexDirection: isSenderloggedInUser
+                        ? "row-reverse"
+                        : "row",
+                      width: "100%",
+                      marginBottom:
+                        isNextMsgSenderSameAsPrevOne || !messagesList[_i + 1]
+                          ? "0"
+                          : "1.5rem",
+                    }}
+                  >
+                    <Avatar
+                      src={
+                        isSenderloggedInUser ? photoUrl : connection?.photoUrl
+                      }
+                      sx={{
+                        width: 18,
+                        height: 18,
+                        visibility: isNextMsgSenderSameAsPrevOne
+                          ? "hidden"
+                          : "visible",
+                        marginBottom: "0.9rem",
+                      }}
+                    />
+                    <Box ref={chatAreaRef}>
+                      <Typography
+                        variant="body2"
+                        className={`${styles.messageText} ${isNextMsgSenderSameAsPrevOne
+                            ? ""
+                            : isSenderloggedInUser
+                              ? styles.rightMsg
+                              : styles.leftMsg
+                          }`}
+                        sx={{
+                          color:
+                            mode === "light" && isSenderloggedInUser
+                              ? "background.paper"
+                              : "",
+                          backgroundColor: isSenderloggedInUser
+                            ? "accent.main"
+                            : mode === "light"
+                              ? "grey.300"
+                              : "grey.700",
+                        }}
+                      >
+                        {message?.message}
+                      </Typography>
+                      {!isNextSameSenderHasSameTime && (
+                        <Typography
+                          variant="body1"
+                          component="div"
+                          sx={{
+                            fontSize: "0.55rem",
+                            paddingTop: "0.1rem",
+                            textAlign: isSenderloggedInUser ? "right" : "left",
+                          }}
+                        >
+                          {message?.time}
+                        </Typography>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               );

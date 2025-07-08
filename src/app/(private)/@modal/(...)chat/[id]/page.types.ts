@@ -5,5 +5,3 @@ export type Message = {
   date: string;
   time: string;
 };
-
-export type MessagesList = Message[];
