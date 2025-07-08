@@ -58,7 +58,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
       });
       return socket;
     } else {
-      const socket = io("/", {
+      const socket = io({
         auth: { token: getCookie("token") },
         path: `${BASE_URL}/socket.io`,
       });
