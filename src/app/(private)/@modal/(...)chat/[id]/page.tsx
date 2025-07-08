@@ -1,8 +1,8 @@
-import React from "react";
-import { Chat } from "@/components/chat/Chat";
+// import React from "react";
+// import { Chat } from "@/components/chat/Chat";
 
 const ChatModal = () => {
-  return <Chat isModal={true} />;
+  return null;
 };
 
 export default ChatModal;
