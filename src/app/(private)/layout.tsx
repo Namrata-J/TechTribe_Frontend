@@ -16,6 +16,7 @@ export default function PrivateLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
+  console.log("🚀 ~ modal:", modal)
   return (
     <Container>
       <PrivateRoutesGuard />

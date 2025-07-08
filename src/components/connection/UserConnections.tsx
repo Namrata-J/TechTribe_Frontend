@@ -60,7 +60,7 @@ const UserConnections = () => {
                 minWidth: "auto",
                 boxShadow: "none",
               }}
-              onClick={() => router.push(`/connectionRequest`)}
+              onClick={() => router.push(`/chat/${connection._id}`)}
             >
               Chat
             </Button>
