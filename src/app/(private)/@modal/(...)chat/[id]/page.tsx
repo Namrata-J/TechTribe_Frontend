@@ -16,16 +16,17 @@ import { BASE_URL } from "@/utils/constants";
 import { getCookie } from "@/utils/authUtils";
 import { useAppSelector } from "@/utils/hooks";
 import SendIcon from "@mui/icons-material/Send";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Message, MessagesList } from "./page.types";
 import { useTheme } from "@/app/_theme/ThemeRegistery";
 import { loggedInUser } from "@/redux/features/user/userSlice.types";
 import { flexWithCenter, flexWithSpace, flexWithStart } from "@/utils/styles";
 import PrivateConnectivityRoundedIcon from "@mui/icons-material/PrivateConnectivityRounded";
-import { MessagesList, ReceiverMessageProps } from "./page.types";
 
 const ChatModal = () => {
-  const { id } = useParams();
   const { mode } = useTheme();
+  const { id: connectionId } = useParams();
+  const chatAreaRef = useRef<HTMLDivElement>(null);
   const [textInput, setTextInput] = useState<string>("");
   const [messagesList, setMessagesList] = useState<MessagesList>([]);
   const [connection, setConnection] = useState<loggedInUser | undefined>();
@@ -42,10 +43,8 @@ const ChatModal = () => {
     const socket = createSocketConnection();
 
     socket.emit("sendMessage", {
-      senderId: loggedInUser?._id,
-      receiverId: connection?._id,
+      receiverId: connectionId,
       senderMessage: textInput,
-      senderFirstName: loggedInUser?.firstName,
     });
   };
 
@@ -55,19 +54,20 @@ const ChatModal = () => {
     const socket = createSocketConnection();
 
     socket.emit("joinChat", {
-      senderId: loggedInUser?._id,
       receiverId: connection?._id,
     });
 
     socket.on(
       "receiveMessage",
-      ({ senderId, senderFirstName, senderMessage }: ReceiverMessageProps) => {
+      ({ messageId, message, senderId, date, time }: Message) => {
         setMessagesList((prevMessages) => [
           ...prevMessages,
           {
+            messageId,
+            message,
             senderId,
-            senderFirstName,
-            text: senderMessage,
+            date,
+            time,
           },
         ]);
       }
@@ -89,11 +89,17 @@ const ChatModal = () => {
   }, [loggedInUser, connection]);
 
   useEffect(() => {
-    const connectionToWhomChatIsOpen = connections.find(
-      (connection) => connection._id === id
+    if (chatAreaRef.current) {
+      chatAreaRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messagesList]);
+
+  useEffect(() => {
+    const receiver = connections.find(
+      (connection) => connection._id === connectionId
     );
 
-    setConnection(connectionToWhomChatIsOpen);
+    setConnection(receiver);
   }, []);
 
   return (
@@ -134,17 +140,23 @@ const ChatModal = () => {
               const isNextMsgSenderSameAsPrevOne =
                 messagesList[_i + 1] &&
                 messagesList[_i + 1]?.senderId === message?.senderId;
+              const isNextSameSenderHasSameTime =
+                isNextMsgSenderSameAsPrevOne &&
+                messagesList[_i + 1]?.time === message?.time;
 
               return (
                 <Box
-                  key={_i}
+                  key={message?.messageId}
                   className={styles.message}
                   sx={{
                     ...flexWithStart,
                     alignItems: "flex-end",
                     flexDirection: isSenderMe ? "row-reverse" : "row",
                     width: "100%",
-                    marginBottom: isNextMsgSenderSameAsPrevOne ? "0" : "1.5rem",
+                    marginBottom:
+                      isNextMsgSenderSameAsPrevOne || !messagesList[_i + 1]
+                        ? "0"
+                        : "1.5rem",
                   }}
                 >
                   <Avatar
@@ -155,31 +167,47 @@ const ChatModal = () => {
                       visibility: isNextMsgSenderSameAsPrevOne
                         ? "hidden"
                         : "visible",
+                      marginBottom: "0.9rem",
                     }}
                   />
-                  <Typography
-                    variant="body2"
-                    className={`${styles.messageText} ${
-                      isNextMsgSenderSameAsPrevOne
-                        ? ""
-                        : isSenderMe
-                        ? styles.rightMsg
-                        : styles.leftMsg
-                    }`}
-                    sx={{
-                      color:
-                        mode === "light" && isSenderMe
-                          ? "background.paper"
-                          : "",
-                      backgroundColor: isSenderMe
-                        ? "accent.main"
-                        : mode === "light"
-                        ? "grey.300"
-                        : "grey.700",
-                    }}
-                  >
-                    {message?.text}
-                  </Typography>
+                  <Box ref={chatAreaRef}>
+                    <Typography
+                      variant="body2"
+                      className={`${styles.messageText} ${
+                        isNextMsgSenderSameAsPrevOne
+                          ? ""
+                          : isSenderMe
+                          ? styles.rightMsg
+                          : styles.leftMsg
+                      }`}
+                      sx={{
+                        color:
+                          mode === "light" && isSenderMe
+                            ? "background.paper"
+                            : "",
+                        backgroundColor: isSenderMe
+                          ? "accent.main"
+                          : mode === "light"
+                          ? "grey.300"
+                          : "grey.700",
+                      }}
+                    >
+                      {message?.message}
+                    </Typography>
+                    {!isNextSameSenderHasSameTime && (
+                      <Typography
+                        variant="body1"
+                        component="div"
+                        sx={{
+                          fontSize: "0.55rem",
+                          paddingTop: "0.1rem",
+                          textAlign: isSenderMe ? "right" : "left",
+                        }}
+                      >
+                        {message?.time}
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               );
             })}

@@ -1,13 +1,9 @@
-type Message = {
-    senderId: string,
-    senderFirstName: string,
-    text: string
+export type Message = {
+  messageId: string;
+  message: string;
+  senderId: string;
+  date: string;
+  time: string;
 };
 
 export type MessagesList = Message[];
-
-export type ReceiverMessageProps = {
-  senderId: string;
-  senderFirstName: string;
-  senderMessage: string;
-};
