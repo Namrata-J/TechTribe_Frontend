@@ -38,11 +38,12 @@ const StyledBackIcon = styled(ArrowBackIosIcon)(({ theme }) => ({
 }));
 
 const Chat = ({ isModal }: { isModal: boolean }) => {
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
   const { mode } = useTheme();
   const dispatch = useAppDispatch();
   const chatAreaRef = useRef<HTMLDivElement>(null);
+  const id = params && params?.id ? params.id : null;
   const [textInput, setTextInput] = useState<string>("");
   const connectionId = typeof id === "string" ? id : id?.[0];
   const { messagesList } = useAppSelector((store) => store.chat);
@@ -58,7 +59,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
       });
       return socket;
     } else {
-      const socket = io({
+      const socket = io("/",{
         auth: { token: getCookie("token") },
         path: `${BASE_URL}/socket.io`,
       });
@@ -109,6 +110,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     );
 
     socket.on("connect_error", (err) => {
+      console.log("🚀 ~ socket.on ~ err:", err)
       if (
         err?.message === "Authentication error" ||
         err?.message === "User not found"
