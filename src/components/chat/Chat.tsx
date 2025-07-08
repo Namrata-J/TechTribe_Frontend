@@ -52,8 +52,18 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
   const { photoUrl } = loggedInUser || {};
 
   const createSocketConnection = () => {
-    const socket = io(BASE_URL, { auth: { token: getCookie("token") } });
-    return socket;
+    if (location.hostname === "localhost") {
+      const socket = io("http://localhost:5000", {
+        auth: { token: getCookie("token") },
+      });
+      return socket;
+    } else {
+      const socket = io("/", {
+        auth: { token: getCookie("token") },
+        path: `${BASE_URL}/socket.io`,
+      });
+      return socket;
+    }
   };
 
   const sendMessage = () => {
