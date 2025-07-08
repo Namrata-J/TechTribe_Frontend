@@ -109,7 +109,6 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     );
 
     socket.on("connect_error", (err) => {
-      console.log("🚀 ~ socket.on ~ err:", err)
       if (
         err?.message === "Authentication error" ||
         err?.message === "User not found"
@@ -147,7 +146,6 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     }
   }, [connectionId, dispatch]);
 
-  console.log("messagesList", messagesList);
   return (
     <Modal open={true} sx={flexWithCenter} onClose={() => {}}>
       <Paper
