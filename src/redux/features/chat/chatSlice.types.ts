@@ -1,4 +1,4 @@
-import { Message } from "@/app/(private)/@modal/(...)chat/[id]/page.types";
+import { Message } from "@/components/chat/chat.types";
 
 export type chatInitialState = {
   messagesList: Message[];

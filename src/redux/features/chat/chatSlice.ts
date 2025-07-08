@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { ChatErrorPayload, chatInitialState } from "./chatSlice.types";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "@/utils/constants";
-import { Message } from "@/app/(private)/@modal/(...)chat/[id]/page.types";
+import { Message } from "@/components/chat/chat.types";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { ChatErrorPayload, chatInitialState } from "./chatSlice.types";
 
 const initialState: chatInitialState = {
   messagesList: [],
