@@ -105,7 +105,7 @@ const Feed = () => {
                 >
                   Skills
                 </Typography>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap'}}>
                   {user?.skills?.map((chip) => (
                     <Chip
                       key={chip}

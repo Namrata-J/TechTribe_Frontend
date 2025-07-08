@@ -96,7 +96,6 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     socket.on(
       "receiveMessage",
       ({ messageId, message, senderId, date, time }: Message) => {
-        console.log("🚀 ~ useEffect ~ messageId, message, senderId, date, time:", messageId, message, senderId, date, time)
         dispatch(
           addMessage({
             messageId,
