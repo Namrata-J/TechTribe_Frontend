@@ -53,7 +53,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
 
   const createSocketConnection = () => {
     if (location.hostname === "localhost") {
-      const socket = io("http://localhost:5000", {
+      const socket = io(BASE_URL, {
         auth: { token: getCookie("token") },
       });
       return socket;
@@ -124,7 +124,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
   }, [loggedInUser, connection, dispatch]);
 
   useEffect(() => {
-    if (chatAreaRef.current) {
+    if (chatAreaRef?.current) {
       chatAreaRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messagesList]);
