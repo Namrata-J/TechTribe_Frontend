@@ -23,7 +23,7 @@ export default function PrivateLayout({
       <Header isAppHeader={true} />
       <AlertComp />
       {children}
-      {modal}
+      {modal || null}
       <Footer />
     </Container>
   );
