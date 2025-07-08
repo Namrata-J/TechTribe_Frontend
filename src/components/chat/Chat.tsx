@@ -87,11 +87,12 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     if (!loggedInUser) return;
 
     const socket = createSocketConnection();
+    console.log("🚀 ~ useEffect ~ socket:", socket)
 
     socket.emit("joinChat", {
       receiverId: connection?._id,
     });
-
+    console.log("🚀 ~ useEffect ~ socket: after join_chat")
     socket.on(
       "receiveMessage",
       ({ messageId, message, senderId, date, time }: Message) => {
@@ -106,7 +107,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
         );
       }
     );
-
+    console.log("🚀 ~ useEffect ~ socket: after receive")
     socket.on("connect_error", (err) => {
       if (
         err?.message === "Authentication error" ||
@@ -116,6 +117,8 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
       }
       socket.disconnect();
     });
+
+    console.log("🚀 ~ useEffect ~ socket: after connect_error")
 
     return () => {
       socket.disconnect();
@@ -145,6 +148,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
     }
   }, [connectionId, dispatch]);
 
+  console.log("messagesList", messagesList);
   return (
     <Modal open={true} sx={flexWithCenter} onClose={() => {}}>
       <Paper
