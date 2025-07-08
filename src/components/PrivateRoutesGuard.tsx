@@ -17,7 +17,7 @@ const PrivateRoutesGuard = () => {
     if (!token) {
       location.assign('/auth?type=login&invalid=true');
     }
-  }, []);
+  }, [loggedInUser, dispatch]);
 
   return null;
 };

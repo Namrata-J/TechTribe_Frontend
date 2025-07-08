@@ -38,7 +38,7 @@ const StyledBackIcon = styled(ArrowBackIosIcon)(({ theme }) => ({
 }));
 
 const Chat = ({ isModal }: { isModal: boolean }) => {
-  let { id } = useParams();
+  const { id } = useParams();
   const router = useRouter();
   const { mode } = useTheme();
   const dispatch = useAppDispatch();
@@ -121,7 +121,7 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
       socket.disconnect();
       dispatch(clearMessages());
     };
-  }, [loggedInUser, connection]);
+  }, [loggedInUser, connection, dispatch]);
 
   useEffect(() => {
     if (chatAreaRef.current) {
@@ -130,12 +130,14 @@ const Chat = ({ isModal }: { isModal: boolean }) => {
   }, [messagesList]);
 
   useEffect(() => {
-    const receiver = connections.find(
-      (connection) => connection._id === connectionId
-    );
+    if (connections && connectionId) {
+      const receiver = connections.find(
+        (connection) => connection._id === connectionId
+      );
 
-    setConnection(receiver);
-  }, []);
+      setConnection(receiver);
+    }
+  }, [connectionId, connections]);
 
   useEffect(() => {
     if (connectionId) {
