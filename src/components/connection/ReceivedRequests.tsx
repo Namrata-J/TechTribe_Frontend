@@ -17,12 +17,19 @@ const ReceivedRequests = () => {
   const { requests } = useAppSelector((store) => store.user);
 
   return requests && requests.length > 0 ? (
-    <Box className={styles.cardsWrapper} sx={flexWithCenter}>
+    <Box
+      className={styles.cardsWrapper}
+      sx={{ ...flexWithCenter, width: { xs: "100%", sm: "90%" } }}
+    >
       {requests.map((request) => (
         <Card
           key={request?.fromUserId?._id}
           className={styles.card}
-          sx={flexWithStart}
+          sx={{
+            ...flexWithStart,
+            width: { xs: "100%", sm: "30rem" },
+            flexDirection: { xs: "column", sm: "row" },
+          }}
         >
           <Avatar
             alt={request?.fromUserId?.firstName}
@@ -34,22 +41,40 @@ const ReceivedRequests = () => {
           />
           <CardContent
             className={styles.cardContent}
-            sx={{ ...flexWithStart, padding: "0 !important" }}
+            sx={{
+              ...flexWithStart,
+              padding: "0 !important",
+              justifyContent: "space-between",
+            }}
           >
-            <Typography
-              color="secondary"
-              variant="subtitle2"
-              component="h6"
-              sx={{ fontWeight: 600, lineHeight: "1.1rem" }}
+            <Box
+              sx={{
+                ...flexWithCenter,
+                flexDirection: "column",
+                alignItems: "flex-start",
+                width: "50%",
+              }}
             >
-              {request?.fromUserId?.firstName} {request?.fromUserId?.lastName}
-            </Typography>
-            <Typography color="grey.600" variant="body1" component="div">
-              {request?.fromUserId?.profession}{" "}
-              {request?.fromUserId?.company
-                ? `, ${request?.fromUserId.company}`
-                : ""}
-            </Typography>
+              <Typography
+                color="secondary"
+                variant="subtitle2"
+                component="h6"
+                sx={{ fontWeight: 600, lineHeight: "1.1rem" }}
+              >
+                {request?.fromUserId?.firstName} {request?.fromUserId?.lastName}
+              </Typography>
+              <Typography
+                color="grey.600"
+                variant="body1"
+                component="div"
+                className={styles.typography}
+              >
+                {request?.fromUserId?.profession}{" "}
+                {request?.fromUserId?.company
+                  ? `, ${request?.fromUserId.company}`
+                  : ""}
+              </Typography>
+            </Box>
             <Box className={styles.btnWrapper} sx={flexWithSpace}>
               <Button
                 variant="contained"

@@ -17,13 +17,14 @@ const UserConnections = () => {
   const { connections } = useAppSelector((store) => store.user);
 
   return connections && connections.length > 0 ? (
-    <Box className={styles.cardsWrapper} sx={flexWithCenter}>
+    <Box className={styles.cardsWrapper} sx={{...flexWithCenter, width: { xs: '100%', sm: '90%'}}}>
       {connections.map((connection) => (
         <Card
           key={connection?._id}
           className={styles.card}
           sx={{
             ...flexWithStart,
+            width: { xs: '100%', sm: '30rem'},
             boxShadow:
               "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px",
           }}
