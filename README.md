@@ -1,4 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+NextJS strictly typed full stack project built using muiv5 for theming and styling, reduxtoolkit for central state management and socket.io for real time chat.
+
+### Tech Stack
+- NextJS
+- Typescript
+- Muiv5 (theming and styling)
+- Redux Toolkit
+- Socket.io
+
+### Pages
+ - 2 grouped routes
+    - (public)/
+    - (private)/
+ - public routes
+    - landing page
+    - intercepted auth route with it's fallback fullpage auth route
+ - private routes
+    - intercepted chat route with it's fallback fullpage chat route
+    - connections
+    - feed
+    - profile
+    - requests
 
 ## Getting Started
 
